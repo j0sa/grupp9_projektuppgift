@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using DatingHemsida_Grupp_9.Models;
 
 namespace DatingHemsida_Grupp_9.Data
 {
@@ -12,5 +13,6 @@ namespace DatingHemsida_Grupp_9.Data
             : base(options)
         {
         }
+        public DbSet<DatingHemsida_Grupp_9.Models.User> User { get; set; }
     }
 }
