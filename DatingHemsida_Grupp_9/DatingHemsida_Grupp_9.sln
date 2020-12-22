@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatingHemsida_Grupp_9", "DatingHemsida_Grupp_9.csproj", "{141F9E78-FA53-4E71-ADD2-55CFB183B614}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatingHemsida_Grupp_9", "DatingHemsida_Grupp_9.csproj", "{141F9E78-FA53-4E71-ADD2-55CFB183B614}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "..\DataLayer\DataLayer.csproj", "{2852B400-2296-4ED0-864D-7E90AF6069FB}"
-EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "UserDb", "..\UserDb\UserDb.sqlproj", "{FA90F873-256F-4750-B914-75BD97AB3756}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "..\DataLayer\DataLayer.csproj", "{2852B400-2296-4ED0-864D-7E90AF6069FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,12 +21,6 @@ Global
 		{2852B400-2296-4ED0-864D-7E90AF6069FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2852B400-2296-4ED0-864D-7E90AF6069FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2852B400-2296-4ED0-864D-7E90AF6069FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA90F873-256F-4750-B914-75BD97AB3756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA90F873-256F-4750-B914-75BD97AB3756}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA90F873-256F-4750-B914-75BD97AB3756}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{FA90F873-256F-4750-B914-75BD97AB3756}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA90F873-256F-4750-B914-75BD97AB3756}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA90F873-256F-4750-B914-75BD97AB3756}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
