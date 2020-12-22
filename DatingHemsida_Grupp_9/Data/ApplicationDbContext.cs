@@ -13,6 +13,6 @@ namespace DatingHemsida_Grupp_9.Data
             : base(options)
         {
         }
-        public DbSet<DatingHemsida_Grupp_9.Models.User> User { get; set; }
+        //public DbSet<DatingHemsida_Grupp_9.Models.User> User { get; set; }
     }
 }

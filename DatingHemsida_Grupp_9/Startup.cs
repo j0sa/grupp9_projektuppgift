@@ -28,7 +28,7 @@ namespace DatingHemsida_Grupp_9
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DatingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Database")));
+            services.AddDbContext<DatingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("database")));
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
