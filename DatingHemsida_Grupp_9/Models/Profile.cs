@@ -17,5 +17,8 @@ namespace DatingHemsida_Grupp_9.Models
 
         public byte[] UserPicture { get; set; }
 
+
+        public Profile() { }
     }
+    
 }
