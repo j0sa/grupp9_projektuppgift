@@ -17,5 +17,7 @@ namespace DataLayer.Models
         public String Gender { get; set; }
 
         public byte[] UserPicture { get; set; }
+
+        public Profile() { }
     }
 }
