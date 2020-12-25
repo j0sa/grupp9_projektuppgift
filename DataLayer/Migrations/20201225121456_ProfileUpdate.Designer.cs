@@ -4,14 +4,16 @@ using DataLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(DatingContext))]
-    partial class DatingContextModelSnapshot : ModelSnapshot
+    [Migration("20201225121456_ProfileUpdate")]
+    partial class ProfileUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,9 +46,6 @@ namespace DataLayer.Migrations
                     b.Property<string>("Lastname")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProfileId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SexualOrientation")
                         .HasColumnType("nvarchar(max)");
 
@@ -55,21 +54,7 @@ namespace DataLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileId");
-
                     b.ToTable("Profiles");
-                });
-
-            modelBuilder.Entity("DataLayer.Models.Profile", b =>
-                {
-                    b.HasOne("DataLayer.Models.Profile", null)
-                        .WithMany("Vänner")
-                        .HasForeignKey("ProfileId");
-                });
-
-            modelBuilder.Entity("DataLayer.Models.Profile", b =>
-                {
-                    b.Navigation("Vänner");
                 });
 #pragma warning restore 612, 618
         }

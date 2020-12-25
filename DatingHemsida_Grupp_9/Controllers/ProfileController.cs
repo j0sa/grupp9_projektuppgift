@@ -28,7 +28,12 @@ namespace DatingHemsida_Grupp_9.Controllers
                 Firstname = p.Firstname,
                 Lastname = p.Lastname,
                 Gender = p.Gender,
-                //UserPicture = p.UserPicture
+                Age=p.Age,
+                Active=p.Active,
+                Email=p.Email,
+                SexualOrientation=p.SexualOrientation,
+                
+                UserPicture = p.UserPicture
             }).ToList();
 
             return View(profiles);
@@ -59,16 +64,35 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: ProfileController/Create
         public ActionResult Create()
         {
-            return View();
+            Profile profile = new Profile
+            {
+            };
+            return View(profile);
         }
 
         // POST: ProfileController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Profile profile)
         {
             try
             {
+
+                _DatingContext.Profiles.Add(new DataLayer.Models.Profile
+                {
+                    //Id = profile.Id,
+                    Firstname = profile.Firstname,
+                    Lastname = profile.Lastname,
+                    Gender = profile.Gender,
+                    UserPicture = profile.UserPicture,
+                    Active = profile.Active,
+                    Age = profile.Age,
+                    Email = profile.Email,
+                    SexualOrientation = profile.SexualOrientation
+
+                });
+                _DatingContext.SaveChanges();
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -92,7 +116,11 @@ namespace DatingHemsida_Grupp_9.Controllers
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
                 Gender = user.Gender,
-                UserPicture = user.UserPicture
+                UserPicture = user.UserPicture,
+                Active=user.Active,
+                Age=user.Age,
+                Email=user.Email,
+                SexualOrientation=user.SexualOrientation
             };
             return View(profile1);
         }
@@ -111,7 +139,12 @@ namespace DatingHemsida_Grupp_9.Controllers
                     Firstname = profile.Firstname,
                     Lastname = profile.Lastname,
                     Gender = profile.Gender,
-                    UserPicture = profile.UserPicture
+                    UserPicture = profile.UserPicture,
+                    Active=profile.Active,
+                    Age=profile.Age,
+                    Email=profile.Email,
+                    SexualOrientation=profile.SexualOrientation
+                    
                 });
                 _DatingContext.SaveChanges();
 
@@ -132,6 +165,7 @@ namespace DatingHemsida_Grupp_9.Controllers
             {
                 //...
             }
+            
 
             Profile profile1 = new Profile
             {
