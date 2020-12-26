@@ -14,6 +14,8 @@ namespace DataLayer
         }
 
             public DbSet<Profile> Profiles { get; set; }
-               
+        public DbSet<Friend> Friends { get; set; }
+
+        
     }
 }
