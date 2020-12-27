@@ -27,43 +27,17 @@ namespace DataLayer.Models
 
 
         public bool Active { get; set; }
-
-
-        //public virtual ICollection<Friend> SentFriendRequests { get; set; }
-
-        //public virtual ICollection<Friend> ReceievedFriendRequests { get; set; }
-
-        //[NotMapped]
-        //public virtual ICollection<Friend> Friends
-        //{
-        //    get
-        //    {
-        //        var friends = SentFriendRequests.Where(x => x.Approved).ToList();
-        //        friends.AddRange(ReceievedFriendRequests.Where(x => x.Approved));
-        //        return friends;
-        //    }
-        //}
-
-        //public virtual ICollection<Friend> Friends { get; set; }
-
-        //public List<string> Vänner { get; set; }
-
-        ////public List<Profile> Meddelanden { get; set; }
-
-
         public byte[] UserPicture { get; set; }
 
-        //public virtual ICollection<Profile> IFriendsWith { get; set; }
-        //public virtual ICollection<Profile> FriendsWithMe { get; set; }
-       
+      
 
+        public ICollection<Message> SentMessages { get; set; } = new List<Message>();
+        public ICollection<Message> RecivedMessages { get; set; } = new List<Message>();
 
-        //public Profile Sender { get; set; }
-        //public Profile Reciver { get; set; }
-
+        public ICollection<FriendRequest> SentFriendRequests { get; set; } = new List<FriendRequest>();
+        public ICollection<FriendRequest> RecivedFriendRequests { get; set; } = new List<FriendRequest>();
         public Profile() {
-            //SentFriendRequests = new List<Friend>();
-            //ReceievedFriendRequests = new List<Friend>();
+            
         }
     }
 }

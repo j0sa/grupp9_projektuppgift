@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(DatingContext))]
-    [Migration("20201226095059_Friends")]
-    partial class Friends
+    [Migration("20201227141512_friend")]
+    partial class friend
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,12 +21,40 @@ namespace DataLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.1");
 
-            modelBuilder.Entity("DataLayer.Models.Friend", b =>
+            modelBuilder.Entity("DataLayer.Models.FriendRequest", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("FriendRequestId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<bool>("Accepted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("FriendReciverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FriendSenderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FriendRequestId");
+
+                    b.HasIndex("FriendReciverId");
+
+                    b.HasIndex("FriendSenderId");
+
+                    b.ToTable("FriendRequests");
+                });
+
+            modelBuilder.Entity("DataLayer.Models.Message", b =>
+                {
+                    b.Property<int>("MessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ReciverId")
                         .HasColumnType("int");
@@ -34,13 +62,16 @@ namespace DataLayer.Migrations
                     b.Property<int>("SenderId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MessageId");
 
                     b.HasIndex("ReciverId");
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Friends");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("DataLayer.Models.Profile", b =>
@@ -79,33 +110,37 @@ namespace DataLayer.Migrations
                     b.ToTable("Profiles");
                 });
 
-            modelBuilder.Entity("ProfileProfile", b =>
+            modelBuilder.Entity("DataLayer.Models.FriendRequest", b =>
                 {
-                    b.Property<int>("FriendsWithMeId")
-                        .HasColumnType("int");
+                    b.HasOne("DataLayer.Models.Profile", "FriendReciver")
+                        .WithMany("RecivedFriendRequests")
+                        .HasForeignKey("FriendReciverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.Property<int>("IFriendsWithId")
-                        .HasColumnType("int");
+                    b.HasOne("DataLayer.Models.Profile", "FriendSender")
+                        .WithMany("SentFriendRequests")
+                        .HasForeignKey("FriendSenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasKey("FriendsWithMeId", "IFriendsWithId");
+                    b.Navigation("FriendReciver");
 
-                    b.HasIndex("IFriendsWithId");
-
-                    b.ToTable("ProfileProfile");
+                    b.Navigation("FriendSender");
                 });
 
-            modelBuilder.Entity("DataLayer.Models.Friend", b =>
+            modelBuilder.Entity("DataLayer.Models.Message", b =>
                 {
                     b.HasOne("DataLayer.Models.Profile", "Reciver")
-                        .WithMany()
+                        .WithMany("RecivedMessages")
                         .HasForeignKey("ReciverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("DataLayer.Models.Profile", "Sender")
-                        .WithMany()
+                        .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Reciver");
@@ -113,19 +148,15 @@ namespace DataLayer.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("ProfileProfile", b =>
+            modelBuilder.Entity("DataLayer.Models.Profile", b =>
                 {
-                    b.HasOne("DataLayer.Models.Profile", null)
-                        .WithMany()
-                        .HasForeignKey("FriendsWithMeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("RecivedFriendRequests");
 
-                    b.HasOne("DataLayer.Models.Profile", null)
-                        .WithMany()
-                        .HasForeignKey("IFriendsWithId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
+                    b.Navigation("RecivedMessages");
+
+                    b.Navigation("SentFriendRequests");
+
+                    b.Navigation("SentMessages");
                 });
 #pragma warning restore 612, 618
         }

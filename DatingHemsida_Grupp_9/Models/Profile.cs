@@ -35,13 +35,14 @@ namespace DatingHemsida_Grupp_9.Models
 
         public bool Active { get; set; }
 
-        public List<Profile> Vänner {get; set;}
-
-        //public List<Profile> Meddelanden { get; set; }
-
-
+       
         public byte[] UserPicture { get; set; }
 
+        public ICollection<Message> SentMessages { get; set; } = new List<Message>();
+        public ICollection<Message> RecivedMessages { get; set; } = new List<Message>();
+
+        public ICollection<FriendRequest> SentFriendRequests { get; set; } = new List<FriendRequest>();
+        public ICollection<FriendRequest> RecivedFriendRequests { get; set; } = new List<FriendRequest>();
 
         public Profile() { }
     }

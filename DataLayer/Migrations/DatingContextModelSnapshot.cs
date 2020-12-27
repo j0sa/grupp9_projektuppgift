@@ -19,22 +19,57 @@ namespace DataLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.1");
 
-            modelBuilder.Entity("DataLayer.Models.Friend", b =>
+            modelBuilder.Entity("DataLayer.Models.FriendRequest", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("FriendRequestId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Status")
+                    b.Property<bool>("Accepted")
                         .HasColumnType("bit");
 
-                    b.HasKey("Id");
+                    b.Property<int>("FriendReciverId")
+                        .HasColumnType("int");
 
-                    b.ToTable("Friends");
+                    b.Property<int>("FriendSenderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FriendRequestId");
+
+                    b.HasIndex("FriendReciverId");
+
+                    b.HasIndex("FriendSenderId");
+
+                    b.ToTable("FriendRequests");
+                });
+
+            modelBuilder.Entity("DataLayer.Models.Message", b =>
+                {
+                    b.Property<int>("MessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ReciverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MessageId");
+
+                    b.HasIndex("ReciverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("DataLayer.Models.Profile", b =>
@@ -71,6 +106,55 @@ namespace DataLayer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Profiles");
+                });
+
+            modelBuilder.Entity("DataLayer.Models.FriendRequest", b =>
+                {
+                    b.HasOne("DataLayer.Models.Profile", "FriendReciver")
+                        .WithMany("RecivedFriendRequests")
+                        .HasForeignKey("FriendReciverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DataLayer.Models.Profile", "FriendSender")
+                        .WithMany("SentFriendRequests")
+                        .HasForeignKey("FriendSenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("FriendReciver");
+
+                    b.Navigation("FriendSender");
+                });
+
+            modelBuilder.Entity("DataLayer.Models.Message", b =>
+                {
+                    b.HasOne("DataLayer.Models.Profile", "Reciver")
+                        .WithMany("RecivedMessages")
+                        .HasForeignKey("ReciverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DataLayer.Models.Profile", "Sender")
+                        .WithMany("SentMessages")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Reciver");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("DataLayer.Models.Profile", b =>
+                {
+                    b.Navigation("RecivedFriendRequests");
+
+                    b.Navigation("RecivedMessages");
+
+                    b.Navigation("SentFriendRequests");
+
+                    b.Navigation("SentMessages");
                 });
 #pragma warning restore 612, 618
         }
