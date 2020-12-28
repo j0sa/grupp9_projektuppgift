@@ -42,12 +42,12 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: ProfileController/Details/5
         public ActionResult Details()
         {
-
-            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Firstname == "Johannes");
-            //UserName = User.Identity.Name
+                var UserName = User.Identity.Name;
+            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
+            
             if (user == null)
             {
-                //...
+               // ...
             }
 
             Profile profile1 = new Profile
@@ -64,10 +64,8 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: ProfileController/Create
         public ActionResult Create()
         {
-            Profile profile = new Profile
-            {
-            };
-            return View(profile);
+            
+            return View();
         }
 
         // POST: ProfileController/Create
@@ -77,17 +75,24 @@ namespace DatingHemsida_Grupp_9.Controllers
         {
             try
             {
+                //var UserName = User.Identity.Name;
+                //var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
+
+                //if (user == null)
+                //{
+                //    // ...
+                //}
 
                 _DatingContext.Profiles.Add(new DataLayer.Models.Profile
                 {
-                    //Id = profile.Id,
+                   
                     Firstname = profile.Firstname,
                     Lastname = profile.Lastname,
                     Gender = profile.Gender,
                     UserPicture = profile.UserPicture,
-                    Active = profile.Active,
+                    Active = true,
                     Age = profile.Age,
-                    Email = profile.Email,
+                    Email = User.Identity.Name.ToString(),
                     SexualOrientation = profile.SexualOrientation
 
                 });

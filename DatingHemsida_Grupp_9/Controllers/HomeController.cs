@@ -20,8 +20,10 @@ namespace DatingHemsida_Grupp_9.Controllers
         {
             _logger = logger;
             _datingContext = datingContext;
+            
+            
         }
-
+        
         public IActionResult Index()
         {
             var personEntities = _datingContext.Profiles.ToList();

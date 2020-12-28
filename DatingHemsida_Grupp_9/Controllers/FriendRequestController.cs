@@ -19,17 +19,18 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
         // GET: FriendRequestController
         public ActionResult Index()
+        
         {
+            //Hämtar inloggade användarens vänner via email och id
+            var user = User.Identity.Name;
+            var prf = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+            var id = prf.Id;
 
-            var lista = _DatingContext.FriendRequests.Where(x => x.FriendSenderId.Equals(3)).Where(x => x.Accepted == true).Select(x => x.FriendReciverId).ToList();
-            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(3)).Where(x => x.Accepted == true).Select(x => x.FriendSenderId).ToList();
 
-
+            var lista = _DatingContext.FriendRequests.Where(x => x.FriendSenderId.Equals(id)).Where(x => x.Accepted == true).Select(x => x.FriendReciverId).ToList();
+            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == true).Select(x => x.FriendSenderId).ToList();
 
             var combinedList = lista.Concat(listatva).ToList();
-
-            //var friends = _DatingContext.Profiles.Where(x=>x.Id );
-
 
             List<Profile> profileEntities = new List<Profile>();
             
@@ -62,6 +63,52 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         // GET: FriendRequestController/Details/5
+
+        public ActionResult Requests()
+        {
+
+            //Hämtar inloggade användarens vänner via email och id
+            var user = User.Identity.Name;
+            var prf = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+            var id = prf.Id;
+
+            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
+
+           
+
+            List<Profile> profileEntities = new List<Profile>();
+
+            foreach (var i in listatva)
+            {
+
+                var friend = _DatingContext.Profiles.SingleOrDefault(p => p.Id == i);
+
+                profileEntities.Add(friend);
+            }
+
+            var profiles = profileEntities.Select(p => new Models.Profile
+            {
+                Id = p.Id,
+                Firstname = p.Firstname,
+                Lastname = p.Lastname,
+                Gender = p.Gender,
+                Age = p.Age,
+                Active = p.Active,
+                Email = p.Email,
+                SexualOrientation = p.SexualOrientation,
+                UserPicture = p.UserPicture
+            }).ToList();
+
+
+
+
+
+            return View(profiles);
+
+           
+        }
+
+
         public ActionResult Details(int id)
         {
             return View();
