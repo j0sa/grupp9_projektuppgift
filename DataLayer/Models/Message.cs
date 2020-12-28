@@ -12,15 +12,17 @@ namespace DataLayer.Models
     {
         [Key]
         public int MessageId { get; set; }
+
         public int SenderId { get; set; }
         public int ReciverId { get; set; }
         public string Text { get; set; }
         public DateTime Date { get; set; }
 
+
         [ForeignKey("SenderId")]
-        public virtual Profile Sender { get; set; }
+        public Profile Sender { get; set; }
 
         [ForeignKey("ReciverId")]
-        public virtual Profile Reciver { get; set; }
+        public Profile Reciver { get; set; }
     }
 }

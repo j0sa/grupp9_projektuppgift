@@ -1,4 +1,5 @@
 ﻿using DataLayer;
+using DataLayer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,48 +20,45 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: FriendRequestController
         public ActionResult Index()
         {
+
+            var lista = _DatingContext.FriendRequests.Where(x => x.FriendSenderId.Equals(3)).Where(x => x.Accepted == true).Select(x => x.FriendReciverId).ToList();
+            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(3)).Where(x => x.Accepted == true).Select(x => x.FriendSenderId).ToList();
+
+
+
+            var combinedList = lista.Concat(listatva).ToList();
+
+            //var friends = _DatingContext.Profiles.Where(x=>x.Id );
+
+
+            List<Profile> profileEntities = new List<Profile>();
             
-    //        var accepted = _DatingContext.FriendRequests.Where(x => x.Accepted==true).ToList();
+            foreach (var i in combinedList)
+            {
+                
+                var friend = _DatingContext.Profiles.SingleOrDefault(p => p.Id == i);
+                
+                profileEntities.Add(friend);
+                }
 
-    //        //var friends = accepted.Where(x => x.FriendSenderId.Equals(1) 
-    //        //|| x.FriendReciverId.Equals(1)).ToList();
-
-            
-
-    //        var radett = accepted.Select(x=>x.FriendSenderId).ToList();
-    //        var radtva = accepted.Select(x => x.FriendReciverId).ToList();
-
-    //        radett.AddRange(radtva);
-    //        var profileEntities = _DatingContext.Profiles.Where(x=>x.Id).ToList();
-
-    //        var filtered = _DatingContext.Profiles
-    //               .Where(x => radett.Any(y => y == x.Id));
-
-    //        IEnumerable<ItemBO> result = items.Where(item =>
-    //categories.Any(category => category.ItemCategory.equals(item.ItemCategory)));
-
-    //        //filteredLessons.Select(l => l.lessonId).ToList();
-
-    //        //var profiles = _DatingContext.Profiles
-
-    //        //    var mySkus = friends.Select(x => x.);
+            var profiles = profileEntities.Select(p => new  Models.Profile
+            {
+                Id = p.Id,
+                Firstname = p.Firstname,
+                Lastname = p.Lastname,
+                Gender = p.Gender,
+                Age = p.Age,
+                Active = p.Active,
+                Email = p.Email,
+                SexualOrientation = p.SexualOrientation,
+                UserPicture = p.UserPicture
+            }).ToList();
 
 
 
-    //        var profiles = profileEntities.Select(p => new Profile
-    //        {
-    //            Id = p.Id,
-    //            Firstname = p.Firstname,
-    //            Lastname = p.Lastname,
-    //            Gender = p.Gender,
-    //            Age = p.Age,
-    //            Active = p.Active,
-    //            Email = p.Email,
-    //            SexualOrientation = p.SexualOrientation,
 
-    //            UserPicture = p.UserPicture
-    //        }).ToList();
-            return View();
+
+            return View(profiles);
         }
 
         // GET: FriendRequestController/Details/5

@@ -18,9 +18,9 @@ namespace DataLayer.Models
         public bool Accepted { get; set; }
 
         [ForeignKey("FriendSenderId")]
-        public virtual Profile FriendSender { get; set; }
+        public Profile FriendSender { get; set; }
 
         [ForeignKey("FriendReciverId")]
-        public virtual Profile FriendReciver { get; set; }
+        public Profile FriendReciver { get; set; }
     }
 }

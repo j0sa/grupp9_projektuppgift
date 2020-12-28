@@ -8,18 +8,20 @@ namespace DatingHemsida_Grupp_9.Models
 {
     public class Message
     {
-        public int Id { get; set; }
+      
+        public int MessageId { get; set; }
+
+        public int SenderId { get; set; }
+        public int ReciverId { get; set; }
         public string Text { get; set; }
         public DateTime Date { get; set; }
 
 
-        [ForeignKey ("Author")]
-        public int AuthorId { get; set; }
-        public Profile Author { get; set; }
+        [ForeignKey("SenderId")]
+        public Profile Sender { get; set; }
 
-        [ForeignKey("Recipient")]
-        public int ToId { get; set; }
-        public Profile Recipient { get; set; }
+        [ForeignKey("ReciverId")]
+        public Profile Reciver { get; set; }
 
     }
 }
