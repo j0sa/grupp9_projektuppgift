@@ -1,5 +1,6 @@
 ﻿using DataLayer;
 using DataLayer.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,15 +10,16 @@ using System.Threading.Tasks;
 
 namespace DatingHemsida_Grupp_9.Controllers
 {
-    public class FriendRequestController : Controller
+    public class FriendController : Controller
     {
         private readonly DatingContext _DatingContext;
 
-        public FriendRequestController(DatingContext datingContext)
+        public FriendController(DatingContext datingContext)
         {
             _DatingContext = datingContext;
         }
         // GET: FriendRequestController
+        [Authorize]
         public ActionResult Index()
         
         {
@@ -63,7 +65,7 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         // GET: FriendRequestController/Details/5
-
+        [Authorize]
         public ActionResult Requests()
         {
 
@@ -107,6 +109,83 @@ namespace DatingHemsida_Grupp_9.Controllers
 
            
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult AcceptDecline(int FriendId, string AcceptDecline)
+        {
+            //Hämtar användarId
+            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name);
+            var UserId = user.Id;
+
+
+            //Hittar rätt rad i Db för att kunna uppdatera den
+                var friendFind = _DatingContext.FriendRequests.FirstOrDefault
+                (x => x.FriendReciverId == UserId && x.FriendSenderId==FriendId);
+            
+            // Om ej null och Accept
+            if (AcceptDecline=="Accept" && friendFind != null) { 
+
+            
+            
+
+                friendFind.Accepted = true;
+
+                _DatingContext.SaveChanges();
+
+             
+            }
+            // Om ej null och Decline
+            else if (AcceptDecline=="Decline" && friendFind != null)
+            {
+                _DatingContext.Remove(friendFind);
+                _DatingContext.SaveChanges();
+            }
+
+
+
+                   
+            return RedirectToAction(nameof(Requests));
+        }
+
+
+
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult RemoveFriend(int FriendId)
+        {
+            //Hämtar användarId
+            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name);
+            var UserId = user.Id;
+
+
+            //Hittar rätt rad i Db för att kunna uppdatera den
+            var friendFind = _DatingContext.FriendRequests.FirstOrDefault
+            (x => x.FriendReciverId == UserId && x.FriendSenderId == FriendId && x.Accepted==true);
+
+            
+
+
+            // Om ej null
+            if (friendFind != null)
+            {
+                _DatingContext.Remove(friendFind);
+                _DatingContext.SaveChanges();
+            }
+
+
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
+
+
+
+
 
 
         public ActionResult Details(int id)

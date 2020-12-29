@@ -12,9 +12,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Id)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Firstname)
             </th>
@@ -24,30 +24,30 @@
             <th>
                 @Html.DisplayNameFor(model => model.Age)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Email)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Gender)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SexualOrientation)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Active)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.UserPicture)
-            </th>
+            </th>*@
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.Id)
-            </td>
+            </td>*@
             <td>
                 @Html.DisplayFor(modelItem => item.Firstname)
             </td>
@@ -57,25 +57,34 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Age)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.Email)
-            </td>
+            </td>*@
             <td>
                 @Html.DisplayFor(modelItem => item.Gender)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SexualOrientation)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.Active)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.UserPicture)
+            </td>*@
+            <td>
+                @using (Html.BeginForm("AcceptDecline", "Friend"))
+                {
+                    <input type="hidden" name="FriendId" value="@item.Id" />
+                    <input type="submit" name ="AcceptDecline" value="Accept" />
+                }
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            @using (Html.BeginForm("AcceptDecline", "Friend"))
+            {
+                <input type="hidden" name="FriendId" value="@item.Id" />
+                <input type="submit" name="AcceptDecline" value="Decline" />
+            }
             </td>
         </tr>
 }
