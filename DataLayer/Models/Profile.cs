@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -27,6 +28,15 @@ namespace DataLayer.Models
 
 
         public bool Active { get; set; }
+
+
+        public string ImagePath { get; set; }
+
+        [NotMapped]
+        public IFormFile ImageFile { get; set; }
+
+
+
         public byte[] UserPicture { get; set; }
 
       

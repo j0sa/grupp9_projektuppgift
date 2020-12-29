@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,7 +37,17 @@ namespace DatingHemsida_Grupp_9.Models
 
         public bool Active { get; set; }
 
-       
+        public string ImagePath { get; set; }
+
+
+
+        //public string ImagePath { get; set; }
+
+
+        [NotMapped]
+        [DisplayName("Upload Image")]
+        public IFormFile ImageFile { get; set; }
+
         public byte[] UserPicture { get; set; }
 
         public ICollection<Message> SentMessages { get; set; } = new List<Message>();
