@@ -76,7 +76,7 @@ namespace DatingHemsida_Grupp_9.Controllers
         // POST: ProfileController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")]Profile profile)
+        public async Task<ActionResult> Create([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")]Profile profile)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace DatingHemsida_Grupp_9.Controllers
                 using (var fileStream = new FileStream(path, FileMode.Create))
                 {
 
-                    profile.ImageFile.CopyToAsync(fileStream);
+                    await profile.ImageFile.CopyToAsync(fileStream);
 
                 }
                    
@@ -106,7 +106,7 @@ namespace DatingHemsida_Grupp_9.Controllers
                         ImagePath=profile.ImagePath
 
                     });
-                _DatingContext.SaveChanges();
+                await _DatingContext.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
