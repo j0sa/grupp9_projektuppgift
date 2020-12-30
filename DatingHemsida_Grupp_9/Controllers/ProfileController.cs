@@ -151,6 +151,7 @@ namespace DatingHemsida_Grupp_9.Controllers
                 SexualOrientation=user.SexualOrientation,
                 ImagePath=user.ImagePath
             };
+            TempData["img"] = user.ImagePath;
             return View(profile1);
         }
 
@@ -214,12 +215,12 @@ namespace DatingHemsida_Grupp_9.Controllers
                         Active = profile.Active,
                         Age = profile.Age,
                         Email = profile.Email,
-                        SexualOrientation = profile.SexualOrientation
-                        //ImagePath=profile.ImagePath
-                        
+                        SexualOrientation = profile.SexualOrientation,
+                        ImagePath = TempData["img"] as string
 
 
-                    });
+
+                    });;;
                     _DatingContext.SaveChanges();
 
 
