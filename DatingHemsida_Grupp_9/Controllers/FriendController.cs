@@ -3,10 +3,8 @@ using DataLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace DatingHemsida_Grupp_9.Controllers
 {
@@ -18,16 +16,16 @@ namespace DatingHemsida_Grupp_9.Controllers
         {
             _DatingContext = datingContext;
         }
+
         // GET: FriendRequestController
         [Authorize]
         public ActionResult Index()
-        
+
         {
             //Hämtar inloggade användarens vänner via email och id
             var user = User.Identity.Name;
             var prf = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
             var id = prf.Id;
-
 
             var lista = _DatingContext.FriendRequests.Where(x => x.FriendSenderId.Equals(id)).Where(x => x.Accepted == true).Select(x => x.FriendReciverId).ToList();
             var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == true).Select(x => x.FriendSenderId).ToList();
@@ -35,54 +33,9 @@ namespace DatingHemsida_Grupp_9.Controllers
             var combinedList = lista.Concat(listatva).ToList();
 
             List<Profile> profileEntities = new List<Profile>();
-            
+
             foreach (var i in combinedList)
             {
-                
-                var friend = _DatingContext.Profiles.SingleOrDefault(p => p.Id == i);
-                
-                profileEntities.Add(friend);
-                }
-
-            var profiles = profileEntities.Select(p => new  Models.Profile
-            {
-                Id = p.Id,
-                Firstname = p.Firstname,
-                Lastname = p.Lastname,
-                Gender = p.Gender,
-                Age = p.Age,
-                Active = p.Active,
-                Email = p.Email,
-                SexualOrientation = p.SexualOrientation,
-                UserPicture = p.UserPicture
-            }).ToList();
-
-
-
-
-
-            return View(profiles);
-        }
-
-        // GET: FriendRequestController/Details/5
-        [Authorize]
-        public ActionResult Requests()
-        {
-
-            //Hämtar inloggade användarens vänner via email och id
-            var user = User.Identity.Name;
-            var prf = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
-            var id = prf.Id;
-
-            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
-
-           
-
-            List<Profile> profileEntities = new List<Profile>();
-
-            foreach (var i in listatva)
-            {
-
                 var friend = _DatingContext.Profiles.SingleOrDefault(p => p.Id == i);
 
                 profileEntities.Add(friend);
@@ -101,13 +54,43 @@ namespace DatingHemsida_Grupp_9.Controllers
                 UserPicture = p.UserPicture
             }).ToList();
 
+            return View(profiles);
+        }
 
+        // GET: FriendRequestController/Details/5
+        [Authorize]
+        public ActionResult Requests()
+        {
+            //Hämtar inloggade användarens vänner via email och id
+            var user = User.Identity.Name;
+            var prf = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+            var id = prf.Id;
 
+            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
 
+            List<Profile> profileEntities = new List<Profile>();
+
+            foreach (var i in listatva)
+            {
+                var friend = _DatingContext.Profiles.SingleOrDefault(p => p.Id == i);
+
+                profileEntities.Add(friend);
+            }
+
+            var profiles = profileEntities.Select(p => new Models.Profile
+            {
+                Id = p.Id,
+                Firstname = p.Firstname,
+                Lastname = p.Lastname,
+                Gender = p.Gender,
+                Age = p.Age,
+                Active = p.Active,
+                Email = p.Email,
+                SexualOrientation = p.SexualOrientation,
+                UserPicture = p.UserPicture
+            }).ToList();
 
             return View(profiles);
-
-           
         }
 
         [Authorize]
@@ -118,38 +101,26 @@ namespace DatingHemsida_Grupp_9.Controllers
             var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name);
             var UserId = user.Id;
 
-
             //Hittar rätt rad i Db för att kunna uppdatera den
-                var friendFind = _DatingContext.FriendRequests.FirstOrDefault
-                (x => x.FriendReciverId == UserId && x.FriendSenderId==FriendId);
-            
+            var friendFind = _DatingContext.FriendRequests.FirstOrDefault
+            (x => x.FriendReciverId == UserId && x.FriendSenderId == FriendId);
+
             // Om ej null och Accept
-            if (AcceptDecline=="Accept" && friendFind != null) { 
-
-            
-            
-
+            if (AcceptDecline == "Accept" && friendFind != null)
+            {
                 friendFind.Accepted = true;
 
                 _DatingContext.SaveChanges();
-
-             
             }
             // Om ej null och Decline
-            else if (AcceptDecline=="Decline" && friendFind != null)
+            else if (AcceptDecline == "Decline" && friendFind != null)
             {
                 _DatingContext.Remove(friendFind);
                 _DatingContext.SaveChanges();
             }
 
-
-
-                   
             return RedirectToAction(nameof(Requests));
         }
-
-
-
 
         [Authorize]
         [HttpPost]
@@ -159,13 +130,9 @@ namespace DatingHemsida_Grupp_9.Controllers
             var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name);
             var UserId = user.Id;
 
-
             //Hittar rätt rad i Db för att kunna uppdatera den
             var friendFind = _DatingContext.FriendRequests.FirstOrDefault
-            (x => x.FriendReciverId == UserId && x.FriendSenderId == FriendId && x.Accepted==true);
-
-            
-
+            (x => x.FriendReciverId == UserId && x.FriendSenderId == FriendId && x.Accepted == true);
 
             // Om ej null
             if (friendFind != null)
@@ -174,19 +141,8 @@ namespace DatingHemsida_Grupp_9.Controllers
                 _DatingContext.SaveChanges();
             }
 
-
-
-
             return RedirectToAction(nameof(Index));
         }
-
-
-
-
-
-
-
-
 
         public ActionResult Details(int id)
         {

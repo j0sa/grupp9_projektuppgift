@@ -21,22 +21,25 @@ namespace DatingHemsida_Grupp_9.Controllers
             _DatingContext = datingContext;
             this._hostEnvironment = hostEnvironment;
         }
+
         // GET: ProfileController
         public ActionResult Index()
         {
             var profileEntities = _DatingContext.Profiles.ToList();
 
+           
+
             var profiles = profileEntities.Select(p => new Profile
             {
-                Id=p.Id,
+                Id = p.Id,
                 Firstname = p.Firstname,
                 Lastname = p.Lastname,
                 Gender = p.Gender,
-                Age=p.Age,
-                Active=p.Active,
-                Email=p.Email,
-                SexualOrientation=p.SexualOrientation,
-                
+                Age = p.Age,
+                Active = p.Active,
+                Email = p.Email,
+                SexualOrientation = p.SexualOrientation,
+
                 UserPicture = p.UserPicture
             }).ToList();
 
@@ -46,10 +49,9 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: ProfileController/Details/5
         public ActionResult Details()
         {
-                var UserName = User.Identity.Name;
+            var UserName = User.Identity.Name;
             var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
-            
-            
+
             Profile profile1 = new Profile
             {
                 Id = user.Id,
@@ -57,11 +59,10 @@ namespace DatingHemsida_Grupp_9.Controllers
                 Lastname = user.Lastname,
                 Gender = user.Gender,
                 UserPicture = user.UserPicture,
-                Age=user.Age,
-                SexualOrientation=user.SexualOrientation,
-                
-                
-                ImagePath=user.ImagePath
+                Age = user.Age,
+                SexualOrientation = user.SexualOrientation,
+
+                ImagePath = user.ImagePath
             };
             return View(profile1);
         }
@@ -69,56 +70,46 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: ProfileController/Create
         public ActionResult Create()
         {
-            
             return View();
         }
 
         // POST: ProfileController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")]Profile profile)
+        public async Task<ActionResult> Create([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")] Profile profile)
         {
             try
             {
                 var pic = profile.ImageFile;
-                if (pic==null)
+                if (pic == null)
                 {
                     profile.ImagePath = "StandardProfil.png";
-
-
                 }
-                else { 
-
-                string wwwRootPath = _hostEnvironment.WebRootPath;
-                string filename = Path.GetFileNameWithoutExtension(profile.ImageFile.FileName);
-                string extension = Path.GetExtension(profile.ImageFile.FileName);
-                profile.ImagePath = filename = filename + DateTime.Now.ToString("yymmssfff") + extension;
-                string path = Path.Combine(wwwRootPath + "/Image", filename);
-                using (var fileStream = new FileStream(path, FileMode.Create))
+                else
                 {
-
-                    await profile.ImageFile.CopyToAsync(fileStream);
-
+                    string wwwRootPath = _hostEnvironment.WebRootPath;
+                    string filename = Path.GetFileNameWithoutExtension(profile.ImageFile.FileName);
+                    string extension = Path.GetExtension(profile.ImageFile.FileName);
+                    profile.ImagePath = filename = filename + DateTime.Now.ToString("yymmssfff") + extension;
+                    string path = Path.Combine(wwwRootPath + "/Image", filename);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await profile.ImageFile.CopyToAsync(fileStream);
+                    }
                 }
-
-
-                }
-
 
                 _DatingContext.Profiles.Add(new DataLayer.Models.Profile
-                    {
-
-                        Firstname = profile.Firstname,
-                        Lastname = profile.Lastname,
-                        Gender = profile.Gender,
-                        UserPicture = profile.UserPicture,
-                        Active = true,
-                        Age = profile.Age,
-                        Email = User.Identity.Name.ToString(),
-                        SexualOrientation = profile.SexualOrientation,
-                        ImagePath=profile.ImagePath
-
-                    });
+                {
+                    Firstname = profile.Firstname,
+                    Lastname = profile.Lastname,
+                    Gender = profile.Gender,
+                    UserPicture = profile.UserPicture,
+                    Active = true,
+                    Age = profile.Age,
+                    Email = User.Identity.Name.ToString(),
+                    SexualOrientation = profile.SexualOrientation,
+                    ImagePath = profile.ImagePath
+                });
                 await _DatingContext.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
@@ -132,24 +123,21 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: ProfileController/Edit/5
         public ActionResult Edit()
         {
-            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Firstname == "Johannes");
-            if (user == null)
-            {
-                //...
-            }
+            var UserName = User.Identity.Name;
+            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
 
             Profile profile1 = new Profile
             {
-                Id=user.Id,
+                Id = user.Id,
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
                 Gender = user.Gender,
                 UserPicture = user.UserPicture,
-                Active=user.Active,
-                Age=user.Age,
-                Email=user.Email,
-                SexualOrientation=user.SexualOrientation,
-                ImagePath=user.ImagePath
+                Active = user.Active,
+                Age = user.Age,
+                Email = user.Email,
+                SexualOrientation = user.SexualOrientation,
+                ImagePath = user.ImagePath
             };
             TempData["img"] = user.ImagePath;
             return View(profile1);
@@ -162,14 +150,9 @@ namespace DatingHemsida_Grupp_9.Controllers
         {
             try
             {
-
-                
-
+                //Uppdaterar hela profilen inklusive bild
                 if (profile.ImageFile != null)
                 {
-
-                    
-
                     string wwwRootPath = _hostEnvironment.WebRootPath;
                     string filename = Path.GetFileNameWithoutExtension(profile.ImageFile.FileName);
                     string extension = Path.GetExtension(profile.ImageFile.FileName);
@@ -177,14 +160,12 @@ namespace DatingHemsida_Grupp_9.Controllers
                     string path = Path.Combine(wwwRootPath + "/Image", filename);
                     using (var fileStream = new FileStream(path, FileMode.Create))
                     {
-
                         await profile.ImageFile.CopyToAsync(fileStream);
-
                     }
 
                     _DatingContext.Profiles.Update(new DataLayer.Models.Profile
                     {
-                        Id=profile.Id,
+                        Id = profile.Id,
                         Firstname = profile.Firstname,
                         Lastname = profile.Lastname,
                         Gender = profile.Gender,
@@ -194,17 +175,12 @@ namespace DatingHemsida_Grupp_9.Controllers
                         Email = User.Identity.Name.ToString(),
                         SexualOrientation = profile.SexualOrientation,
                         ImagePath = profile.ImagePath
-
                     });
                     await _DatingContext.SaveChangesAsync();
-
-
                 }
-
-
+                //Uppdaterar profil men behåller tidigare bild om ingen ny laddats upp
                 else
                 {
-                    //profile = new Profile
                     _DatingContext.Profiles.Update(new DataLayer.Models.Profile
                     {
                         Id = profile.Id,
@@ -217,18 +193,11 @@ namespace DatingHemsida_Grupp_9.Controllers
                         Email = profile.Email,
                         SexualOrientation = profile.SexualOrientation,
                         ImagePath = TempData["img"] as string
-
-
-
-                    });;;
+                    }); ; ;
                     _DatingContext.SaveChanges();
-
-
-
-
                 }
-               return RedirectToAction(nameof(Index));
-            } 
+                return RedirectToAction(nameof(Index));
+            }
             catch
             {
                 return View();
@@ -238,13 +207,8 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: ProfileController/Delete/5
         public ActionResult Delete(int id)
         {
-            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Firstname == "Johannes");
-            //UserName = User.Identity.Name
-            if (user == null)
-            {
-                //...
-            }
-            
+            var UserName = User.Identity.Name;
+            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
 
             Profile profile1 = new Profile
             {

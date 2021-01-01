@@ -39,6 +39,8 @@ namespace DatingHemsida_Grupp_9.Models
 
         public string ImagePath { get; set; }
 
+        public List<Message> Messages { get; set; } = new List<Message>();
+
 
 
         //public string ImagePath { get; set; }
