@@ -111,11 +111,16 @@
     
 </table>
 <div>
+
+
     @using (Html.BeginForm("AcceptDecline", "Friend"))
     {
         @*<input type="hidden" name="SendTo" value="@item.ReciverId" />*@
         <input type="submit" name="NewMessage" value="Send a Message!" />
+        
     }
+    @Html.TextArea("Meddelande", "Test text",  new {@class="form-control"})
+
 
 </div>
 

@@ -170,7 +170,7 @@ namespace DatingHemsida_Grupp_9.Controllers
                         Lastname = profile.Lastname,
                         Gender = profile.Gender,
                         UserPicture = profile.UserPicture,
-                        Active = true,
+                        Active = profile.Active,
                         Age = profile.Age,
                         Email = User.Identity.Name.ToString(),
                         SexualOrientation = profile.SexualOrientation,
