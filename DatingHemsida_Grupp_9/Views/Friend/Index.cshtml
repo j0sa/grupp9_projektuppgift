@@ -4,17 +4,11 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Friendlist</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
-            @*<th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Firstname)
             </th>
@@ -24,63 +18,41 @@
             <th>
                 @Html.DisplayNameFor(model => model.Age)
             </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Gender)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SexualOrientation)
             </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.Active)
-            </th>*@
-            @*<th>
-                @Html.DisplayNameFor(model => model.UserPicture)
-            </th>*@
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.Firstname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lastname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Age)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>*@
-            <td>
-                @Html.DisplayFor(modelItem => item.Gender)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SexualOrientation)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.Active)
-            </td>*@
-            @*<td>
-                @Html.DisplayFor(modelItem => item.UserPicture)
-            </td>*@
-        <td>
-            @using (Html.BeginForm("RemoveFriend", "Friend"))
-            {
-                <input type="hidden" name="FriendId" value="@item.Id" />
-                <input type="submit" value="Remove" />
-            }
-        </td>
-           
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Firstname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lastname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Age)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SexualOrientation)
+                </td>
+                <td>
+                    @using (Html.BeginForm("RemoveFriend", "Friend"))
+                    {
+                        <input type="hidden" name="FriendId" value="@item.Id" />
+                        <input type="submit" value="Remove" />
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

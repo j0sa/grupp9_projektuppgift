@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,9 +24,10 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: ProfileController
         public ActionResult Index()
         {
-            var profileEntities = _DatingContext.Profiles.ToList();
+            //Kontrollerar navbar
+            FriendRequestVisible();
 
-           
+            var profileEntities = _DatingContext.Profiles.ToList();
 
             var profiles = profileEntities.Select(p => new Profile
             {
@@ -49,6 +49,9 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: ProfileController/Details/5
         public ActionResult Details()
         {
+            //Kontrollerar navbar
+            FriendRequestVisible();
+
             var UserName = User.Identity.Name;
             var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
 
@@ -123,6 +126,9 @@ namespace DatingHemsida_Grupp_9.Controllers
         // GET: ProfileController/Edit/5
         public ActionResult Edit()
         {
+            //Kontrollerar navbar
+            FriendRequestVisible();
+
             var UserName = User.Identity.Name;
             var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
 
@@ -233,6 +239,27 @@ namespace DatingHemsida_Grupp_9.Controllers
             catch
             {
                 return View();
+            }
+        }
+
+        public void FriendRequestVisible()
+        {
+            //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
+            ViewBag.Requests = false;
+            var user = User.Identity.Name;
+
+            if (user != null)
+            {
+                var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+                var id = profile.Id;
+
+                var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
+                    .Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
+
+                if (listatva.Count > 0)
+                {
+                    ViewBag.Requests = true;
+                }
             }
         }
     }

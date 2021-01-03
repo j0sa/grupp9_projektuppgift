@@ -63,7 +63,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.WallMessages)
             </th>
-
         </tr>
     </thead>
 
@@ -99,7 +98,6 @@
                         @Html.DisplayFor(modelItem => item.UserPicture)
                     </td>*@
 
-
                 @*<td>
                         @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                         @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
@@ -108,100 +106,85 @@
             </tr>
         }
     </tbody>
-    
 </table>
 <div>
-
 
     @using (Html.BeginForm("AcceptDecline", "Friend"))
     {
         @*<input type="hidden" name="SendTo" value="@item.ReciverId" />*@
         <input type="submit" name="NewMessage" value="Send a Message!" />
-        
+
     }
-    @Html.TextArea("Meddelande", "Test text",  new {@class="form-control"})
-
-
+    @Html.TextArea("Meddelande", "Test text", new { @class = "form-control" })
 </div>
 
+<!--<div>
+    <h4>WallViewModel</h4>
 
-
-
-
-
-
-
-
-
-
-    <!--<div>
-        <h4>WallViewModel</h4>
-
-        <p>
-            <a asp-action="Create">Create New</a>
-        </p>
-        <table class="table">
-            <thead>
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Profile.Firstname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Profile.Lastname)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Profile.Age)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Profile.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Profile.Gender)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Profile.SexualOrientation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Profile.Active)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Profile.UserPicture)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
                 <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Profile.Firstname)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Profile.Lastname)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Profile.Age)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Profile.Email)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Profile.Gender)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Profile.SexualOrientation)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Profile.Active)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Profile.UserPicture)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => modelItem.Profile.Firstname)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => modelItem.Profile.Lastname)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => modelItem.Profile.Age)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => modelItem.Profile.Email)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => modelItem.Profile.Gender)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => modelItem.Profile.SexualOrientation)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => modelItem.Profile.Active)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => modelItem.Profile.UserPicture)
-                        </td>
-                        <td>-->
-    @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
-    <!--</td>
-                </tr>
-
-        </tbody>
-    </table>-->
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Profile.Firstname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Profile.Lastname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Profile.Age)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Profile.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Profile.Gender)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Profile.SexualOrientation)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Profile.Active)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Profile.UserPicture)
+                    </td>
+                    <td>-->
+@*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
+<!--</td>
+            </tr>
+    </tbody>
+</table>-->

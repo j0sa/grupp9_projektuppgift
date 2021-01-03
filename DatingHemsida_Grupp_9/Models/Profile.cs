@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace DatingHemsida_Grupp_9.Models
 {
@@ -20,7 +18,7 @@ namespace DatingHemsida_Grupp_9.Models
         public String Lastname { get; set; }
 
         [Required(ErrorMessage = "Age is required")]
-        [Range(18,100,ErrorMessage = "Minimum age is 18")]
+        [Range(18, 100, ErrorMessage = "Minimum age is 18")]
         public int Age { get; set; }
 
         //[EmailAddress(ErrorMessage = "Please enter a valid email")]
@@ -31,9 +29,8 @@ namespace DatingHemsida_Grupp_9.Models
         public String Gender { get; set; }
 
         [Required(ErrorMessage = "Sexual Orientation is a required field")]
-        [Display(Name ="Intreseted in:")]
+        [Display(Name = "Intreseted in:")]
         public string SexualOrientation { get; set; }
-
 
         public bool Active { get; set; }
 
@@ -41,10 +38,7 @@ namespace DatingHemsida_Grupp_9.Models
 
         public List<Message> Messages { get; set; } = new List<Message>();
 
-
-
-        //public string ImagePath { get; set; }
-
+        
 
         [NotMapped]
         [DisplayName("Upload Image")]
@@ -58,7 +52,8 @@ namespace DatingHemsida_Grupp_9.Models
         public ICollection<FriendRequest> SentFriendRequests { get; set; } = new List<FriendRequest>();
         public ICollection<FriendRequest> RecivedFriendRequests { get; set; } = new List<FriendRequest>();
 
-        public Profile() { }
+        public Profile()
+        {
+        }
     }
-    
 }

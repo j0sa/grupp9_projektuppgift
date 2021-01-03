@@ -22,10 +22,17 @@ namespace DatingHemsida_Grupp_9.Controllers
         public ActionResult Index()
 
         {
+            //Kontrollerar navbar
+            FriendRequestVisible();
+
             //Hämtar inloggade användarens vänner via email och id
             var user = User.Identity.Name;
-            var prf = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
-            var id = prf.Id;
+            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+            if (profile == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var id = profile.Id;
 
             var lista = _DatingContext.FriendRequests.Where(x => x.FriendSenderId.Equals(id)).Where(x => x.Accepted == true).Select(x => x.FriendReciverId).ToList();
             var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == true).Select(x => x.FriendSenderId).ToList();
@@ -61,10 +68,19 @@ namespace DatingHemsida_Grupp_9.Controllers
         [Authorize]
         public ActionResult Requests()
         {
+            //Kontrollerar navbar
+            FriendRequestVisible();
+
             //Hämtar inloggade användarens vänner via email och id
             var user = User.Identity.Name;
-            var prf = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
-            var id = prf.Id;
+            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+
+            if (profile == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var id = profile.Id;
 
             var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
 
@@ -142,6 +158,27 @@ namespace DatingHemsida_Grupp_9.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public void FriendRequestVisible()
+        {
+            //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
+            ViewBag.Requests = false;
+            var user = User.Identity.Name;
+            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+                
+            if (user != null&&profile!=null)
+            {
+                var id = profile.Id;
+
+                var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
+                    .Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
+
+                if (listatva.Count > 0)
+                {
+                    ViewBag.Requests = true;
+                }
+            }
         }
 
         public ActionResult Details(int id)

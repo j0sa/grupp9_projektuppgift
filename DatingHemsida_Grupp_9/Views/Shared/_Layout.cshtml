@@ -22,8 +22,27 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index">Find friends</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Friend" asp-action="Index">Friend List</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Wall" asp-action="Index">My wall</a>
+                        </li>
+                        @{ if (ViewBag.Requests == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Friend" asp-action="Requests">New Friend Requests!</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Friend" asp-action="Requests">No Friend Requests</a>
+                                </li>
+ }
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -38,7 +57,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - DatingHemsida_Grupp_9 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2020 - DatingHemsida_Grupp_9
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
