@@ -25,11 +25,12 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index">Find friends</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Friend" asp-action="Index">Friend List</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Wall" asp-action="Index">My wall</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Friend" asp-action="Index">Friend List</a>
+                        </li>
+
                         @{ if (ViewBag.Requests == true)
                             {
                                 <li class="nav-item">
@@ -41,7 +42,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Friend" asp-action="Requests">No Friend Requests</a>
                                 </li>
- }
+                            }
                         }
                     </ul>
                     <partial name="_LoginPartial" />
