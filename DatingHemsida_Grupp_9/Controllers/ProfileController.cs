@@ -1,9 +1,11 @@
 ﻿using DataLayer;
 using DatingHemsida_Grupp_9.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,12 +24,43 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         // GET: ProfileController
-        public ActionResult Index()
+        public ActionResult Index(string searchString, string searchGender)
         {
+            ViewBag.NoResult = "";
             //Kontrollerar navbar
             FriendRequestVisible();
+            var profileEntities = new List<DataLayer.Models.Profile>();
 
-            var profileEntities = _DatingContext.Profiles.ToList();
+            if (!String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(searchGender))
+            {
+                profileEntities = _DatingContext.Profiles.Where(x => x.Active==true && x.Firstname.Contains(searchString) && x.Gender.Equals(searchGender)
+                || x.Active == true && x.Lastname.Contains(searchString) && x.Gender.Equals(searchGender)).OrderBy(x => x.Firstname).ToList();
+            }
+            else if (!String.IsNullOrEmpty(searchString)&&searchGender=="")
+            {
+                profileEntities = _DatingContext.Profiles.Where(x => x.Active == true && x.Firstname.Contains(searchString)
+               || x.Active == true && x.Lastname.Contains(searchString)).OrderBy(x => x.Firstname).ToList();
+
+            }
+            else if (String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(searchGender))
+            {
+                profileEntities = _DatingContext.Profiles.Where(x => x.Active == true && x.Gender.Equals(searchGender)).OrderBy(x => x.Firstname).ToList();
+
+            }
+            else if (!String.IsNullOrEmpty(searchString) && String.IsNullOrEmpty(searchGender)) {
+                profileEntities = _DatingContext.Profiles.Where(x => x.Active == true && x.Firstname.Contains(searchString)|| x.Active == true &&
+                x.Active == true && x.Lastname.Contains(searchString)).OrderBy(x => x.Firstname).ToList();
+
+
+            }
+
+            else { profileEntities = _DatingContext.Profiles.Where(x=>x.Active==true).ToList(); }
+
+            
+
+            if (profileEntities.Count()==0) {
+                ViewBag.NoResult = "No result!";
+            }
 
             var profiles = profileEntities.Select(p => new Profile
             {
@@ -71,8 +104,15 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         // GET: ProfileController/Create
+        [Authorize]
         public ActionResult Create()
         {
+            var UserName = User.Identity.Name;
+            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
+            if (user != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -83,6 +123,8 @@ namespace DatingHemsida_Grupp_9.Controllers
         {
             try
             {
+               
+
                 var pic = profile.ImageFile;
                 if (pic == null)
                 {
@@ -119,7 +161,7 @@ namespace DatingHemsida_Grupp_9.Controllers
             }
             catch
             {
-                return View();
+                return RedirectToAction(nameof(Index));
             }
         }
 

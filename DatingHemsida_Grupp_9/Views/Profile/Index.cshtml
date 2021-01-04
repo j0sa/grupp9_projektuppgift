@@ -5,6 +5,19 @@
 }
 
 <h1>Users</h1>
+<form asp-controller="Profile" asp-action="Index">
+    <p>
+        <input type="text" name="searchString" placeholder="Search for new friends!" />
+        <select name="searchGender">
+            <option></option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+        </select>
+        <input type="submit" value="Search" />
+    </p>
+    @ViewBag.NoResult
+</form>
 <table class="table">
     <thead>
         <tr>
@@ -71,8 +84,9 @@
         <td>
             @using (Html.BeginForm("Index", "Wall"))
             {
+                if (item.Id>0) { 
                 <input type="hidden" name="profileId" value="@item.Id" />
-                <input type="submit" name="Profile" value="Go to profile!" />
+                <input type="submit" name="Profile" value="Go to profile!" />}
             }
         </td>
         </tr>
