@@ -109,14 +109,33 @@
 </table>
 <div>
 
-    @using (Html.BeginForm("AcceptDecline", "Friend"))
-    {
-        @*<input type="hidden" name="SendTo" value="@item.ReciverId" />*@
-        <input type="submit" name="NewMessage" value="Send a Message!" />
-
-    }
-    @Html.TextArea("Meddelande", "Test text", new { @class = "form-control" })
+   <form>
+       <p>
+           <textarea id="messageBody" rows="4" cols="50" placeholder="Write a message!"></textarea>
+       </p>
+       <p>
+           <input id="sendButton" type="submit" name="NewMessage" value="Post!" />
+       </p>
+   </form> 
+    
 </div>
+
+<script>
+    $(() =>
+        $("#sendButton").click((e) => {
+            e.preventDefault();
+
+            $.ajax({
+                url: "/api/MessageAPI/postmessage",
+                type: "POST",
+                data: JSON.stringify({ "meddelnade"}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: alert("Success"),
+            });
+        }
+
+</script>
 
 <!--<div>
     <h4>WallViewModel</h4>

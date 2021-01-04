@@ -29,7 +29,7 @@ namespace DatingHemsida_Grupp_9.Controllers
             //Om inloggad och egen profil skapad
             if (UserName != null && user != null)
             {
-                //Kollar efter nya vänförfrågningar
+                
                 FriendRequestVisible();
 
                 //Hämtar alla meddelanden

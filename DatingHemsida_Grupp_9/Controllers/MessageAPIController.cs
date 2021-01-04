@@ -1,5 +1,7 @@
 ﻿using DataLayer;
+using DatingHemsida_Grupp_9.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -78,9 +80,20 @@ namespace DatingHemsida_Grupp_9.Controllers
 
         // POST api/<MessageController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        [Route("postmessage")]
+        public void SendMessage(int senderId, int recierId, string text, DateTime date)
         {
-        }
+            Message message = new Message() {
+                SenderId = senderId,
+                ReciverId = recierId,
+                Text = text,
+                Date = DateTime.Now
+            };
+
+            _DatingContext.Add(message);
+            _DatingContext.SaveChanges();
+       
+    }
 
         // PUT api/<MessageController>/5
         [HttpPut("{id}")]
