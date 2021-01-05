@@ -6,11 +6,11 @@
 
 <h1>Wall</h1>
 <div>
-
-    @using (Html.BeginForm("AddFriend", "Friend", new { reciverId = Model.Profile.Id }))
+    @if ((bool)ViewBag.AddFriend == true)
     {
-        @if (ViewBag.AddFriend = true)
+        @using (Html.BeginForm("AddFriend", "Friend", new { reciverId = Model.Profile.Id }))
         {
+
             @*<input type="hidden" name="profileId" value="" />*@
             <input type="submit" name="GoToPage" value="Add friend!" />
         }}

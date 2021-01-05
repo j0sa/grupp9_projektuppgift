@@ -27,6 +27,8 @@ namespace DatingHemsida_Grupp_9.Controllers
             var UserName = User.Identity.Name;
             var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
 
+            ViewBag.AddFriend = false;
+
             //Om inloggad och egen profil skapad
             if (UserName != null && user != null)
             {
@@ -106,7 +108,6 @@ namespace DatingHemsida_Grupp_9.Controllers
 
         public void AddFriendVisible(int id)
         {
-            ViewBag.AddFriend = true;
 
             var UserName = User.Identity.Name;
             int user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
@@ -114,9 +115,9 @@ namespace DatingHemsida_Grupp_9.Controllers
            var listOfFriends = _DatingContext.FriendRequests.Where(x => x.FriendSenderId == id && x.FriendReciverId == user||
             x.FriendReciverId == id && x.FriendSenderId == user).ToList();
 
-            if (listOfFriends.Any())
+            if (!listOfFriends.Any())
             {
-                ViewBag.AddFriend = false;
+                ViewBag.AddFriend = true;
             };
 
 
