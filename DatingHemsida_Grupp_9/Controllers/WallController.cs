@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace DatingHemsida_Grupp_9.Controllers
 {
+    [Authorize]
     public class WallController : Controller
     {
         private readonly DatingContext _DatingContext;
@@ -18,7 +19,7 @@ namespace DatingHemsida_Grupp_9.Controllers
             _DatingContext = datingContext;
         }
 
-        [Authorize]
+        
         public ActionResult Index(int? profileId)
         // GET: Wall
         {
@@ -41,6 +42,8 @@ namespace DatingHemsida_Grupp_9.Controllers
                 //Om en parameterskickas med
                 if (profileId != null)
                 {
+                    AddFriendVisible((int)profileId);
+
                     //Fyller tomma listan baserat på int parametern
                     mot = messages.Where(x => x.ReciverId == profileId).ToList();
 
@@ -101,6 +104,24 @@ namespace DatingHemsida_Grupp_9.Controllers
             else { return RedirectToAction("Index", "Home"); }
         }
 
+        public void AddFriendVisible(int id)
+        {
+            ViewBag.AddFriend = true;
+
+            var UserName = User.Identity.Name;
+            int user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
+
+           var listOfFriends = _DatingContext.FriendRequests.Where(x => x.FriendSenderId == id && x.FriendReciverId == user||
+            x.FriendReciverId == id && x.FriendSenderId == user).ToList();
+
+            if (listOfFriends.Any())
+            {
+                ViewBag.AddFriend = false;
+            };
+
+
+        }
+
         //Kontrollerar navbar
         public void FriendRequestVisible()
         {
@@ -122,6 +143,8 @@ namespace DatingHemsida_Grupp_9.Controllers
                 ViewBag.Requests = true;
             }
         }
+
+     
 
         // GET: Wall/Details/5
         public ActionResult Details(int id)

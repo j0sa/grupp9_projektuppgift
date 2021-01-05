@@ -21,8 +21,15 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         public IActionResult Index()
-        {
-            try { 
+        {try { 
+            Random random = new Random();
+            int count = random.Next(0,_datingContext.Profiles.Where(x=>x.Active==true).Count());
+            var profileEntities = new List<DataLayer.Models.Profile>();
+
+
+            profileEntities = _datingContext.Profiles.Where(x=>x.Active==true).OrderBy(x => Guid.NewGuid()).Take(3).ToList();
+           
+
             //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
             ViewBag.Requests = false;
             var user = User.Identity.Name;
@@ -37,7 +44,7 @@ namespace DatingHemsida_Grupp_9.Controllers
 
             var exampel = _datingContext.Profiles.Where(x => x.ImagePath != "StandardProfil.png").ToList();
 
-            var profiles = exampel.Select(p => new Profile
+            var profiles = profileEntities.Select(p => new Profile
             {
                 Id = p.Id,
                 Firstname = p.Firstname,
@@ -52,30 +59,7 @@ namespace DatingHemsida_Grupp_9.Controllers
                 UserPicture = p.UserPicture
             }).ToList();
 
-            List<Profile> profiles1 = new List<Profile>();
-            var prof1 = profiles.SingleOrDefault(x => x.Id == 21);
-            profiles1.Add(prof1);
-            var prof2 = profiles.SingleOrDefault(x => x.Id == 16);
-            profiles1.Add(prof2);
-            var prof3 = profiles.SingleOrDefault(x => x.Id == 2);
-            profiles1.Add(prof3);
-
-            //var visaExempel = exampel.Where(x=>x);
-
-            //var personEntities = _datingContext.Profiles.ToList();
-
-            //var persons = personEntities.Select(p => new Profile
-            //{
-            //    Firstname = p.Firstname,
-            //    Lastname = p.Lastname,
-            //    Gender = p.Gender
-            //}).ToList();
-
-            //foreach(Profile p in persons)
-            //{
-            //    Console.WriteLine(p.Firstname, p.Lastname, p.Gender);
-            //}
-            return View(profiles1);
+            return View(profiles);
             }
             catch (Exception e)
             {

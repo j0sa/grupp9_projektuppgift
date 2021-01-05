@@ -1,5 +1,6 @@
 ﻿using DataLayer;
 using DatingHemsida_Grupp_9.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -9,10 +10,12 @@ namespace DatingHemsida_Grupp_9.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MessageAPIController : ControllerBase
-    {
+    { 
         private readonly DatingContext _DatingContext;
 
+       
         public MessageAPIController(DatingContext datingContext)
         {
             _DatingContext = datingContext;
@@ -81,17 +84,20 @@ namespace DatingHemsida_Grupp_9.Controllers
         // POST api/<MessageController>
         [HttpPost]
         [Route("postmessage")]
-        public void SendMessage(int senderId, int recierId, string text, DateTime date)
+        public void SendMessage(string text)
         {
-            Message message = new Message() {
-                SenderId = senderId,
-                ReciverId = recierId,
-                Text = text,
-                Date = DateTime.Now
-            };
 
-            _DatingContext.Add(message);
-            _DatingContext.SaveChanges();
+            Console.WriteLine(text);
+            //var test = message.Date;
+            //Message message = new Message() {
+            //    //SenderId = senderId,
+            //    //ReciverId = recierId,
+            //    //Text = text,
+            //    Date = DateTime.Now
+            //};
+           
+
+            
        
     }
 

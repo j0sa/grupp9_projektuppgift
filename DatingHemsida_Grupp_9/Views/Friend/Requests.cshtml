@@ -47,6 +47,14 @@
                     @Html.DisplayFor(modelItem => item.SexualOrientation)
                 </td>
                 <td>
+                    @using (Html.BeginForm("Index", "Wall"))
+                    {
+                       
+                            <input type="hidden" name="profileId" value="@item.Id" />
+                            <input type="submit" name="Profile" value="Go to profile!" />
+                    }
+                    </td>
+                <td>
                     @using (Html.BeginForm("AcceptDecline", "Friend"))
                     {
                         <input type="hidden" name="FriendId" value="@item.Id" />

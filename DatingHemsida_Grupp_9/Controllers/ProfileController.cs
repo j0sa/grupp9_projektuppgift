@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace DatingHemsida_Grupp_9.Controllers
 {
+    [Authorize]
     public class ProfileController : Controller
     {
         private readonly DatingContext _DatingContext;
@@ -104,7 +105,6 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         // GET: ProfileController/Create
-        [Authorize]
         public ActionResult Create()
         {
             var UserName = User.Identity.Name;

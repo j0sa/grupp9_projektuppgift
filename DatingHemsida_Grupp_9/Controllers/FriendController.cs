@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace DatingHemsida_Grupp_9.Controllers
 {
+    [Authorize]
     public class FriendController : Controller
     {
         private readonly DatingContext _DatingContext;
@@ -18,7 +19,7 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         // GET: FriendRequestController
-        [Authorize]
+        
         public ActionResult Index()
 
         {
@@ -65,7 +66,6 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         // GET: FriendRequestController/Details/5
-        [Authorize]
         public ActionResult Requests()
         {
             //Kontrollerar navbar
@@ -109,7 +109,7 @@ namespace DatingHemsida_Grupp_9.Controllers
             return View(profiles);
         }
 
-        [Authorize]
+       
         [HttpPost]
         public ActionResult AcceptDecline(int FriendId, string AcceptDecline)
         {
@@ -138,7 +138,27 @@ namespace DatingHemsida_Grupp_9.Controllers
             return RedirectToAction(nameof(Requests));
         }
 
-        [Authorize]
+        [HttpPost]
+        public ActionResult AddFriend(int reciverId)
+        {
+
+            var UserName = User.Identity.Name;
+            int user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
+
+            DataLayer.Models.FriendRequest friendRequest = new DataLayer.Models.FriendRequest()
+            {
+                FriendSenderId = user,
+                FriendReciverId = reciverId,
+                Accepted = false,
+
+            };
+            _DatingContext.FriendRequests.Add(friendRequest);
+            _DatingContext.SaveChanges();
+
+            return RedirectToAction("Index", "Wall", new {profileId=reciverId}); ;
+
+        }
+
         [HttpPost]
         public ActionResult RemoveFriend(int FriendId)
         {

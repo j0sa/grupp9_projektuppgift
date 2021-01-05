@@ -4,9 +4,16 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Wall</h1>
 <div>
-    <h4>Wall</h4>
+
+    @using (Html.BeginForm("AddFriend", "Friend", new { reciverId = Model.Profile.Id }))
+    {
+        @if (ViewBag.AddFriend = true)
+        {
+            @*<input type="hidden" name="profileId" value="" />*@
+            <input type="submit" name="GoToPage" value="Add friend!" />
+        }}
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -28,12 +35,6 @@
             @Html.DisplayFor(model => model.Profile.Age)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Profile.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Profile.Email)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Profile.Gender)
         </dt>
         <dd class="col-sm-10">
@@ -45,16 +46,16 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Profile.SexualOrientation)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Profile.ImagePath)
-        </dt>
+        @*<dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Profile.ImagePath)
+            </dt>*@
         <dd class="col-sm-10">
             <img src="@("~/Image/" + Model.Profile.ImagePath)" asp-append-version="true" width="250" height="250" />
     </dl>
 </div>
 <div>
     @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+    
 </div>
 
 <table class="table">
@@ -70,6 +71,9 @@
         @foreach (var item in Model.WallMessages)
         {
             <tr>
+                @*<td>
+                        @Html.DisplayFor(modelItem => item.ReciverId)
+                    </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.Author)
                 </td>
@@ -109,34 +113,86 @@
 </table>
 <div>
 
-   <form>
-       <p>
-           <textarea id="messageBody" rows="4" cols="50" placeholder="Write a message!"></textarea>
-       </p>
-       <p>
-           <input id="sendButton" type="submit" name="NewMessage" value="Post!" />
-       </p>
-   </form> 
-    
+    <form>
+        <p>
+            <textarea id="messageBody" rows="4" cols="50" placeholder="Write a message!"></textarea>
+        </p>
+        <p>
+            <button id ="sendButton" type="button">Post!</button>
+            @*<input id="sendButton" type="submit" name="NewMessage" value="Post!" />*@
+        </p>
+    </form>
+
 </div>
 
-<script>
-    $(() =>
+@section Scripts {
+   <script>
+        $(() =>
+            $("#sendButton").click((e) => {
+                e.preventDefault();
+                //var message = new Object();
+                //message.Text = $('#messageBody').val();
+                //message.SenderId = 2;
+                //message.ReciverId = 3;
+                //message.Date = "2021-01-05";
+                //message.Author = "Test";
+                //var myJSON = JSON.stringify(message);
+                //info = [];
+                //info[0] = 'test';
+                //info[1] = 'test2';
+                var texten = "test";
+
+                $.ajax({
+                    type: "POST",
+                    url: '/api/MessageAPI/postMessage',
+                    data: {text:"tesr2"},
+                    //data: JSON.stringify({paramName : info }),
+                    //contentType:"application/json; charset=utf-8",
+                    dataType: "JSON",
+                    success: alert("sent")
+                })
+            })
+            
+        );
+        //function successFunction() {
+        //    alert("test");
+        //}
+
+        //document.getElementById("sendButton").addEventListener("click", successFunction, true);
+
+        //function successFunction(data) {
+        //    alert("test");
+        //}
+
+        
+        //$('#sendButton').click(Function(e)  {
+        //    preventDefault()
+        //    alert("Test");
+
+
+        //});
+       
+    @*$(() =>
         $("#sendButton").click((e) => {
             e.preventDefault();
+            e.alert("Test");
 
             $.ajax({
-                url: "/api/MessageAPI/postmessage",
+                url: '@Url.Action("SendMessage", "MessageAPI")',
                 type: "POST",
-                data: JSON.stringify({ "meddelnade"}),
+                data: JSON.stringify({text: "meddelnade"}),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                success: alert("Success"),
+                success: successFunction
             });
-        }
+            function successFunction(data) {
+                alert(data);
+            }
+        }*@
 
-</script>
+    </script>
 
+}
 <!--<div>
     <h4>WallViewModel</h4>
 

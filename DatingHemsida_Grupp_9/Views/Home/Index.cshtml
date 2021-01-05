@@ -4,58 +4,21 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Homepage</h1>
+<h5>Press their profilepictures to explore</h5>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
-        @*<tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Id)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Firstname)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Lastname)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Age)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Email)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Gender)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.SexualOrientation)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Active)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ImagePath)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.UserPicture)
-                </th>
-                <th></th>
-            </tr>*@
+       
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>*@
                 <td>
 
                     <div id="logo">
-                        <a href="@Url.Action("Index", "Wall")">
+                        <a href="@Url.Action("Index", "Wall", new {profileId=item.Id})">
                             <img src="@("~/Image/" + item.ImagePath)" asp-append-version="true" width="250" height="250" />
                         </a>
                     </div>
@@ -77,7 +40,7 @@
 
                     @using (Html.BeginForm("Index", "Wall"))
                     {
-                        <input type="hidden" name="exId" value="@item.Id" />
+                        <input type="hidden" name="profileId" value="@item.Id" />
                         <input type="submit" name="GoToPage" value="Go to profile!" />
                     }
                 </td>
