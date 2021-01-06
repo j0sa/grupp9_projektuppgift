@@ -14,10 +14,12 @@
             @*<input type="hidden" name="profileId" value="" />*@
             <input type="submit" name="GoToPage" value="Add friend!" />
         }}
+    <input id="id" type="hidden" name="id" value="@Model.Profile.Id" />
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Profile.Firstname)
+            
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Profile.Firstname)
@@ -130,6 +132,62 @@
         $(() =>
             $("#sendButton").click((e) => {
                 e.preventDefault();
+
+                //var message = new Object();
+
+                var message = {};
+                message.text = $('#messageBody').val();
+                message.reciverId = $('#id').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/MessageAPI/postMessage",
+                    data: JSON.stringify(message),
+                    contentType: "application/json",
+                    dataType: "json"
+
+                });
+
+
+                //var text = $('#messageBody').val();
+                ////var id = $('#id').val();
+                //WallViewModel.Message = new Object();
+                //WallViewModel.Message.Text = "testtext";
+
+
+
+                //$.ajax({
+                //    type: "POST",
+                //    url: "/api/MessageAPI/postMessage",
+                //    data: JSON.stringify(WallViewModel.Message),
+                //    contentType: "application/json; charset=utf-8",
+                //    dataType: "json"
+                //});
+            
+
+
+                //$.ajax({
+                //    url: '/api/MessageAPI/postMessage',
+                //    dataType: 'json',
+                //    type: 'post',
+                //    contentType: 'application/json',
+                //    data: JSON.stringify({ "text": $('#messageBody').val(), "id": $('#id').val() }),
+                //    processData: false,
+                //    success: function (data, textStatus, jQxhr) {
+                //        $('#response pre').html(JSON.stringify(data));
+                //    },
+                //    error: function (jqXhr, textStatus, errorThrown) {
+                //        console.log(errorThrown);
+                //    }
+                    
+                //});
+
+
+
+                //var posting = $.post("/api/MessageAPI/postMessage", { text: text, id: id });
+                //alert(posting.done);
+                //alert(id);
+
                 //var message = new Object();
                 //message.Text = $('#messageBody').val();
                 //message.SenderId = 2;
@@ -140,17 +198,17 @@
                 //info = [];
                 //info[0] = 'test';
                 //info[1] = 'test2';
-                var texten = "test";
+                //var texten = "test";
 
-                $.ajax({
-                    type: "POST",
-                    url: '/api/MessageAPI/postMessage',
-                    data: {text:"tesr2"},
-                    //data: JSON.stringify({paramName : info }),
-                    //contentType:"application/json; charset=utf-8",
-                    dataType: "JSON",
-                    success: alert("sent")
-                })
+                //$.ajax({
+                //    type: "POST",
+                //    url: '/api/MessageAPI/postMessage',
+                //    data: {text:"tesr2"},
+                //    //data: JSON.stringify({paramName : info }),
+                //    //contentType:"application/json; charset=utf-8",
+                //    dataType: "JSON",
+                //    success: alert("sent")
+                //})
             })
             
         );

@@ -1,5 +1,6 @@
 ﻿using DataLayer;
 using DatingHemsida_Grupp_9.Models;
+using DatingHemsida_Grupp_9.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -84,10 +85,11 @@ namespace DatingHemsida_Grupp_9.Controllers
         // POST api/<MessageController>
         [HttpPost]
         [Route("postmessage")]
-        public void SendMessage(string text)
+        public void SendMessage([FromBody] Message message)
         {
-
-            Console.WriteLine(text);
+           
+            //Console.WriteLine(text);
+            //Console.WriteLine(id);
             //var test = message.Date;
             //Message message = new Message() {
             //    //SenderId = senderId,
@@ -95,11 +97,11 @@ namespace DatingHemsida_Grupp_9.Controllers
             //    //Text = text,
             //    Date = DateTime.Now
             //};
-           
 
-            
-       
-    }
+
+
+
+        }
 
         // PUT api/<MessageController>/5
         [HttpPut("{id}")]
