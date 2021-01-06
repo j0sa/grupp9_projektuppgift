@@ -86,8 +86,9 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" title="Manage">Back to accountmanager</a>
 </div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

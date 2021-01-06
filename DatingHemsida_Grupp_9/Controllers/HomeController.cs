@@ -21,45 +21,60 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         public IActionResult Index()
-        {try { 
-            Random random = new Random();
-            int count = random.Next(0,_datingContext.Profiles.Where(x=>x.Active==true).Count());
-            var profileEntities = new List<DataLayer.Models.Profile>();
-
-
-            profileEntities = _datingContext.Profiles.Where(x=>x.Active==true).OrderBy(x => Guid.NewGuid()).Take(3).ToList();
-           
-
-            //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
-            ViewBag.Requests = false;
-            var user = User.Identity.Name;
-             var profile = _datingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
-            if (user != null && profile!=null)
+        {
+            try
             {
+                Random random = new Random();
+                int count = random.Next(0, _datingContext.Profiles.Where(x => x.Active == true).Count());
+                var profileEntities = new List<DataLayer.Models.Profile>();
+
+                int userId;
+                var userName = User.Identity.Name;
+                var profile = _datingContext.Profiles.SingleOrDefault(p => p.Email.Equals(userName));
+
+                if (User.Identity.IsAuthenticated && profile!=null)
+                {
+                    
+                    userId = _datingContext.Profiles.SingleOrDefault(p => p.Email == userName).Id;
+                    
+                }
+                else
+                {
+                    userId = 0;
+                    
+                    
+                }
+
+                profileEntities = _datingContext.Profiles.Where(x => x.Active == true && x.Id != userId).OrderBy(x => Guid.NewGuid()).Take(3).ToList();
+
+                //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
+                ViewBag.Requests = false;
+
+                if (userName != null && profile != null)
+                {
                     FriendRequestVisible();
-            }
-                else if (user != null && profile == null){
+                }
+                else if (userName != null && profile == null)
+                {
                     return RedirectToAction("Create", "Profile");
                 }
 
-            var exampel = _datingContext.Profiles.Where(x => x.ImagePath != "StandardProfil.png").ToList();
+                var profiles = profileEntities.Select(p => new Profile
+                {
+                    Id = p.Id,
+                    Firstname = p.Firstname,
+                    Lastname = p.Lastname,
+                    Gender = p.Gender,
+                    Age = p.Age,
+                    Active = p.Active,
+                    Email = p.Email,
+                    SexualOrientation = p.SexualOrientation,
+                    ImagePath = p.ImagePath,
 
-            var profiles = profileEntities.Select(p => new Profile
-            {
-                Id = p.Id,
-                Firstname = p.Firstname,
-                Lastname = p.Lastname,
-                Gender = p.Gender,
-                Age = p.Age,
-                Active = p.Active,
-                Email = p.Email,
-                SexualOrientation = p.SexualOrientation,
-                ImagePath = p.ImagePath,
+                    UserPicture = p.UserPicture
+                }).ToList();
 
-                UserPicture = p.UserPicture
-            }).ToList();
-
-            return View(profiles);
+                return View(profiles);
             }
             catch (Exception e)
             {
@@ -75,7 +90,6 @@ namespace DatingHemsida_Grupp_9.Controllers
 
             var profile = _datingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
 
-
             var id = profile.Id;
 
             var listatva = _datingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
@@ -84,12 +98,8 @@ namespace DatingHemsida_Grupp_9.Controllers
             if (listatva.Count > 0)
             {
                 ViewBag.Requests = true;
-               
             }
-
         }
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

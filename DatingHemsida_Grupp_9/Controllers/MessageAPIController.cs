@@ -4,6 +4,7 @@ using DatingHemsida_Grupp_9.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -77,20 +78,19 @@ namespace DatingHemsida_Grupp_9.Controllers
         //}
 
         // GET api/<MessageController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //[HttpGet]
+        //[Route("printmessage")]
+        //public string PrintMessage()
+        //{
+        //    string message = "test";
+        //    return message;
+        //}
 
         // POST api/<MessageController>
         [HttpPost]
         [Route("postmessage")]
         public void SendMessage([FromBody] Message message)
         {
-
-            //Console.WriteLine(text);
-            //Console.WriteLine(id);
 
             var UserName = User.Identity.Name;
             int user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
@@ -105,8 +105,7 @@ namespace DatingHemsida_Grupp_9.Controllers
             _DatingContext.Messages.Add(databaseMessage);
             _DatingContext.SaveChanges();
 
-
-
+            
 
         }
 

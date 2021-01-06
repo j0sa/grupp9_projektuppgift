@@ -55,10 +55,7 @@
             <img src="@("~/Image/" + Model.Profile.ImagePath)" asp-append-version="true" width="250" height="250" />
     </dl>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    
-</div>
+
 
 <table class="table">
     <thead>
@@ -121,7 +118,6 @@
         </p>
         <p>
             <button id ="sendButton" type="button">Post!</button>
-            @*<input id="sendButton" type="submit" name="NewMessage" value="Post!" />*@
         </p>
     </form>
 
@@ -129,195 +125,40 @@
 
 @section Scripts {
    <script>
-        $(() =>
-            $("#sendButton").click((e) => {
-                e.preventDefault();
+       $(() =>
+           $("#sendButton").click((e) => {
+               e.preventDefault();
+               
 
-                //var message = new Object();
-
-                var message = {};
-                message.text = $('#messageBody').val();
-                message.reciverId = $('#id').val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "/api/MessageAPI/postMessage",
-                    data: JSON.stringify(message),
-                    contentType: "application/json",
-                    dataType: "json"
-
-                });
+               var message = {};
+               message.text = $('#messageBody').val();
+               message.reciverId = $('#id').val();
+               if (message.text.length > 10 && message.text.length < 250) {
 
 
-                //var text = $('#messageBody').val();
-                ////var id = $('#id').val();
-                //WallViewModel.Message = new Object();
-                //WallViewModel.Message.Text = "testtext";
+                   $.ajax({
+                       type: "POST",
+                       url: "/api/MessageAPI/postMessage",
+                       data: JSON.stringify(message),
+                       contentType: "application/json",
+                       dataType: "json",
+                       success: location.reload()
+                     
+                       
+                       
+                       
+                       
 
-
-
-                //$.ajax({
-                //    type: "POST",
-                //    url: "/api/MessageAPI/postMessage",
-                //    data: JSON.stringify(WallViewModel.Message),
-                //    contentType: "application/json; charset=utf-8",
-                //    dataType: "json"
-                //});
-            
-
-
-                //$.ajax({
-                //    url: '/api/MessageAPI/postMessage',
-                //    dataType: 'json',
-                //    type: 'post',
-                //    contentType: 'application/json',
-                //    data: JSON.stringify({ "text": $('#messageBody').val(), "id": $('#id').val() }),
-                //    processData: false,
-                //    success: function (data, textStatus, jQxhr) {
-                //        $('#response pre').html(JSON.stringify(data));
-                //    },
-                //    error: function (jqXhr, textStatus, errorThrown) {
-                //        console.log(errorThrown);
-                //    }
-                    
-                //});
-
-
-
-                //var posting = $.post("/api/MessageAPI/postMessage", { text: text, id: id });
-                //alert(posting.done);
-                //alert(id);
-
-                //var message = new Object();
-                //message.Text = $('#messageBody').val();
-                //message.SenderId = 2;
-                //message.ReciverId = 3;
-                //message.Date = "2021-01-05";
-                //message.Author = "Test";
-                //var myJSON = JSON.stringify(message);
-                //info = [];
-                //info[0] = 'test';
-                //info[1] = 'test2';
-                //var texten = "test";
-
-                //$.ajax({
-                //    type: "POST",
-                //    url: '/api/MessageAPI/postMessage',
-                //    data: {text:"tesr2"},
-                //    //data: JSON.stringify({paramName : info }),
-                //    //contentType:"application/json; charset=utf-8",
-                //    dataType: "JSON",
-                //    success: alert("sent")
-                //})
-            })
-            
-        );
-        //function successFunction() {
-        //    alert("test");
-        //}
-
-        //document.getElementById("sendButton").addEventListener("click", successFunction, true);
-
-        //function successFunction(data) {
-        //    alert("test");
-        //}
-
-        
-        //$('#sendButton').click(Function(e)  {
-        //    preventDefault()
-        //    alert("Test");
-
-
-        //});
-       
-    @*$(() =>
-        $("#sendButton").click((e) => {
-            e.preventDefault();
-            e.alert("Test");
-
-            $.ajax({
-                url: '@Url.Action("SendMessage", "MessageAPI")',
-                type: "POST",
-                data: JSON.stringify({text: "meddelnade"}),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: successFunction
-            });
-            function successFunction(data) {
-                alert(data);
-            }
-        }*@
+                   });
+                   
+                   
+               } else {
+                   alert("Please enter a text between 10 and 250 charcters");
+               }
+           })
+       );
 
     </script>
 
 }
-<!--<div>
-    <h4>WallViewModel</h4>
 
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Profile.Firstname)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Profile.Lastname)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Profile.Age)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Profile.Email)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Profile.Gender)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Profile.SexualOrientation)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Profile.Active)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Profile.UserPicture)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => modelItem.Profile.Firstname)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => modelItem.Profile.Lastname)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => modelItem.Profile.Age)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => modelItem.Profile.Email)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => modelItem.Profile.Gender)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => modelItem.Profile.SexualOrientation)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => modelItem.Profile.Active)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => modelItem.Profile.UserPicture)
-                    </td>
-                    <td>-->
-@*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })*@
-<!--</td>
-            </tr>
-    </tbody>
-</table>-->

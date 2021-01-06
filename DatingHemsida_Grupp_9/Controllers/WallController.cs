@@ -19,7 +19,6 @@ namespace DatingHemsida_Grupp_9.Controllers
             _DatingContext = datingContext;
         }
 
-        
         public ActionResult Index(int? profileId)
         // GET: Wall
         {
@@ -32,7 +31,6 @@ namespace DatingHemsida_Grupp_9.Controllers
             //Om inloggad och egen profil skapad
             if (UserName != null && user != null)
             {
-                
                 FriendRequestVisible();
 
                 //Hämtar alla meddelanden
@@ -108,19 +106,19 @@ namespace DatingHemsida_Grupp_9.Controllers
 
         public void AddFriendVisible(int id)
         {
-
             var UserName = User.Identity.Name;
             int user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
 
-           var listOfFriends = _DatingContext.FriendRequests.Where(x => x.FriendSenderId == id && x.FriendReciverId == user||
-            x.FriendReciverId == id && x.FriendSenderId == user).ToList();
+            var listOfFriends = _DatingContext.FriendRequests.Where(x => x.FriendSenderId == id && x.FriendReciverId == user ||
+             x.FriendReciverId == id && x.FriendSenderId == user).ToList();
 
-            if (!listOfFriends.Any())
+            if (user != id)
             {
-                ViewBag.AddFriend = true;
-            };
-
-
+                if (!listOfFriends.Any())
+                {
+                    ViewBag.AddFriend = true;
+                };
+            }
         }
 
         //Kontrollerar navbar
@@ -137,15 +135,13 @@ namespace DatingHemsida_Grupp_9.Controllers
             //Lista av vänförfrågningar
             var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
                 .Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
-            
+
             //Om listan av vänförfrågningar är större än 0
             if (listatva.Count > 0)
             {
                 ViewBag.Requests = true;
             }
         }
-
-     
 
         // GET: Wall/Details/5
         public ActionResult Details(int id)

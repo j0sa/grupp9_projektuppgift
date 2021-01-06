@@ -30,6 +30,17 @@ namespace DatingHemsida_Grupp_9.Controllers
             ViewBag.NoResult = "";
             //Kontrollerar navbar
             FriendRequestVisible();
+
+            var user = User.Identity.Name;
+            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+
+            if (profile == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+
+
             var profileEntities = new List<DataLayer.Models.Profile>();
 
             if (!String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(searchGender))
@@ -157,7 +168,7 @@ namespace DatingHemsida_Grupp_9.Controllers
                 });
                 await _DatingContext.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("index","Wall");
             }
             catch
             {
@@ -173,6 +184,11 @@ namespace DatingHemsida_Grupp_9.Controllers
 
             var UserName = User.Identity.Name;
             var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
+
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             Profile profile1 = new Profile
             {
@@ -191,6 +207,19 @@ namespace DatingHemsida_Grupp_9.Controllers
             return View(profile1);
         }
 
+        //public void DeletePicture()
+        //{
+        //    string wwwRootPath = _hostEnvironment.WebRootPath;
+        //    var UserName = User.Identity.Name;
+        //    string imgPath = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).ImagePath;
+
+        //    var fullPath = Path.Combine(wwwRootPath + "/Image", imgPath);
+        //    if (imgPath != "StandardProfil.png")
+        //    {
+        //        System.IO.File.Delete(fullPath);
+        //    }
+        //}
+
         // POST: ProfileController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -201,7 +230,19 @@ namespace DatingHemsida_Grupp_9.Controllers
                 //Uppdaterar hela profilen inklusive bild
                 if (profile.ImageFile != null)
                 {
+                    //DeletePicture();
                     string wwwRootPath = _hostEnvironment.WebRootPath;
+                    //var UserName = User.Identity.Name;
+                    //string imgPath = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).ImagePath;
+
+                    //var fullPath = Path.Combine(wwwRootPath + "/Image", imgPath);
+                    //if (imgPath != "StandardProfil.png")
+                    //{
+                    //    System.IO.File.Delete(fullPath);
+                    //}
+
+
+                    
                     string filename = Path.GetFileNameWithoutExtension(profile.ImageFile.FileName);
                     string extension = Path.GetExtension(profile.ImageFile.FileName);
                     profile.ImagePath = filename = filename + DateTime.Now.ToString("yymmssfff") + extension;
@@ -241,7 +282,7 @@ namespace DatingHemsida_Grupp_9.Controllers
                         Email = profile.Email,
                         SexualOrientation = profile.SexualOrientation,
                         ImagePath = TempData["img"] as string
-                    }); ; ;
+                    }); 
                     _DatingContext.SaveChanges();
                 }
                 return RedirectToAction(nameof(Index));
@@ -289,10 +330,10 @@ namespace DatingHemsida_Grupp_9.Controllers
             //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
             ViewBag.Requests = false;
             var user = User.Identity.Name;
-
-            if (user != null)
+            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+            if (user != null && profile!=null)
             {
-                var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+                
                 var id = profile.Id;
 
                 var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
