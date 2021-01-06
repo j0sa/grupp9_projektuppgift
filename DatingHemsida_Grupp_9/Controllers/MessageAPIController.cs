@@ -4,6 +4,7 @@ using DatingHemsida_Grupp_9.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -87,16 +88,22 @@ namespace DatingHemsida_Grupp_9.Controllers
         [Route("postmessage")]
         public void SendMessage([FromBody] Message message)
         {
-           
+
             //Console.WriteLine(text);
             //Console.WriteLine(id);
-            //var test = message.Date;
-            //Message message = new Message() {
-            //    //SenderId = senderId,
-            //    //ReciverId = recierId,
-            //    //Text = text,
-            //    Date = DateTime.Now
-            //};
+
+            var UserName = User.Identity.Name;
+            int user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
+
+            DataLayer.Models.Message databaseMessage = new DataLayer.Models.Message()
+            {
+                SenderId = user,
+                ReciverId = message.ReciverId,
+                Text = message.Text,
+                Date = DateTime.Now
+            };
+            _DatingContext.Messages.Add(databaseMessage);
+            _DatingContext.SaveChanges();
 
 
 
