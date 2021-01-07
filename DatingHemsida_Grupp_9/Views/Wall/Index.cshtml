@@ -57,83 +57,59 @@
 </div>
 
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.WallMessages)
-            </th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var item in Model.WallMessages)
-        {
-            <tr>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.ReciverId)
-                    </td>*@
-                <td>
-                    @Html.DisplayFor(modelItem => item.Author)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Text)
-                </td>
-                @*<td>
-                        @Html.DisplayFor(modelItem => item.Lastname)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Age)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Email)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Gender)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SexualOrientation)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Active)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UserPicture)
-                    </td>*@
-
-                @*<td>
-                        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-                    </td>*@
-            </tr>
-        }
-    </tbody>
-</table>
+<div id="testDiv">
+    @await Html.PartialAsync("_Messeges", Model.WallMessages)
+</div>
 <div>
 
     <form>
         <p>
             <textarea id="messageBody" rows="4" cols="50" placeholder="Write a message!"></textarea>
-        </p>
-        <p>
-            <button id ="sendButton" type="button">Post!</button>
-        </p>
+        </p><a href="@Url.Action("GetMessages", "Wall", new {id=Model.Profile.Id})">Upp</a>
+    <p>
+        <button id="sendButton" type="button">Post!</button>
+
+</p>
     </form>
 
 </div>
 
 @section Scripts {
-   <script>
+    <script>
+
+       
+
+       //setInterval(function () {
+       //    var profile = {};
+       //    profile.id = $('#id').val();
+       //    $.ajax({
+       //        url: "Wall/DisplayMessage",
+       //        type: "GET",
+       //        data: JSON.stringify(profile),
+       //        contentType: "application/json",
+       //        dataType: "json",
+
+
+
+       //    }).done(function (partialViewResult) {
+       //        $("#testDiv").html(partialViewResult);
+
+       //    });
+       //}, 500); //5 seconds
        $(() =>
+
            $("#sendButton").click((e) => {
                e.preventDefault();
-               
+
 
                var message = {};
                message.text = $('#messageBody').val();
+               $('#messageBody').val("");
+
                message.reciverId = $('#id').val();
-               if (message.text.length > 10 && message.text.length < 250) {
+
+
+               if (message.text.length >= 1 && message.text.length <= 255) {
 
 
                    $.ajax({
@@ -142,21 +118,45 @@
                        data: JSON.stringify(message),
                        contentType: "application/json",
                        dataType: "json",
-                       success: location.reload()
-                     
-                       
-                       
-                       
-                       
+                       //success: location.reload()
 
                    });
-                   
-                   
+
+
+
                } else {
-                   alert("Please enter a text between 10 and 250 charcters");
+                   alert("Please enter a valid message");
                }
+
+
+
+               //function GetMessages() {
+               //    alert("GetMessages")
+               //    $.ajax({
+               //        url: "DisplayMessage",
+               //        type: "POST",
+               //        cache: false,
+               //        async: true,
+               //        dataType: html
+               //    })
+               //        .done(function (result) {
+               //            $("#testDiv").html(result);
+               //        })
+               //}
+
+               //$.ajax({
+               //    url: "Wall/DisplayMessage",
+               //    type: "GET",
+               //    success: function (response) {
+               //        $("#testDiv").html(response)
+               //    }
+               //});
            })
        );
+
+
+
+
 
     </script>
 

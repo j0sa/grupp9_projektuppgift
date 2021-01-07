@@ -4,6 +4,7 @@ using DatingHemsida_Grupp_9.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -144,11 +145,98 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         // GET: Wall/Details/5
-        public ActionResult Details(int id)
+        public ActionResult GetMessages(int id)
         {
-            return View();
+            var databaseMessages = _DatingContext.Messages.Where(x => x.ReciverId == id);
+            //Hämtar alla profiler i databas
+            var profiles = _DatingContext.Profiles.ToList();
+
+            List<Message> messages = new List<Message>();
+
+
+            foreach (var m in databaseMessages)
+            {
+                Message message = new Message()
+                {
+                    MessageId = m.MessageId,
+                    SenderId = m.SenderId,
+                    ReciverId = m.ReciverId,
+                    Text = m.Text,
+                    Date = m.Date,
+                    Author = profiles.Single(x => x.Id == m.SenderId).Firstname
+                };
+                messages.Add(message);
+            };
+            return View("Index", "Wall");
+            //return PartialView("_Messeges", messages);
         }
 
+
+
+        //[HttpGet]
+        //public IActionResult DisplayMessage([FromBody] Profile profile)
+        //{
+        //    var UserName = User.Identity.Name;
+        //    var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
+
+        //    var databaseMessages = _DatingContext.Messages.Where(x => x.ReciverId == profile.Id);
+        //    //Hämtar alla profiler i databas
+        //    var profiles = _DatingContext.Profiles.ToList();
+
+        //    List<Message> messages = new List<Message>();
+
+
+        //    foreach (var m in databaseMessages)
+        //    {
+        //        Message message = new Message()
+        //        {
+        //            MessageId = m.MessageId,
+        //            SenderId = m.SenderId,
+        //            ReciverId = m.ReciverId,
+        //            Text = m.Text,
+        //            Date = m.Date,
+        //            Author = profiles.Single(x => x.Id == m.SenderId).Firstname
+        //        };
+        //        messages.Add(message);
+        //    };
+
+        //    //List<Message> messages = databaseMessages.Select(m => new Message
+        //    //{
+        //    //    MessageId = m.MessageId,
+        //    //    SenderId = m.SenderId,
+        //    //    ReciverId = m.ReciverId,
+        //    //    Text = m.Text,
+        //    //    Date = m.Date,
+        //    //    Author = profiles.SingleOrDefault(x => x.Id == m.SenderId).Firstname
+        //    //}).ToList();
+
+        //    return PartialView("_Messeges", messages);
+
+        //    //return new PartialViewResult
+        //    //{
+        //    //    ViewName = "_Messages",
+        //    //    ViewData = new ViewDataDictionary
+        //    //    <List<Message>>(ViewData, messages)
+        //    //};
+
+
+
+        //    //var profiles = profileEntities.Select(p => new Profile
+        //    //{
+        //    //    Id = p.Id,
+        //    //    Firstname = p.Firstname,
+        //    //    Lastname = p.Lastname,
+        //    //    Gender = p.Gender,
+        //    //    Age = p.Age,
+        //    //    Active = p.Active,
+        //    //    Email = p.Email,
+        //    //    SexualOrientation = p.SexualOrientation,
+
+        //    //    UserPicture = p.UserPicture
+        //    //}).ToList();
+        //    // Author = profiles.Single(x => x.Id == m.SenderId).Firstname
+
+        //}
         // GET: Wall/Create
         public ActionResult Create()
         {

@@ -12,9 +12,11 @@ namespace DatingHemsida_Grupp_9.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Firstname is required")]
+        [RegularExpression(@"^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\/<>?:;|=.,0-9]{1,20}$", ErrorMessage = "Invalid Firstname")]
         public String Firstname { get; set; }
 
         [Required(ErrorMessage = "Lastname is required")]
+        [RegularExpression(@"^[^±!@£$%^&*_+§¡€#¢§¶•ªº«\/<>?:;|=.,0-9]{1,20}$", ErrorMessage ="Invalid Lastname")]
         public String Lastname { get; set; }
 
         [Required(ErrorMessage = "Age is required")]

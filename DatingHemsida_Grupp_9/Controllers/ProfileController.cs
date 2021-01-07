@@ -124,6 +124,7 @@ namespace DatingHemsida_Grupp_9.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
+            ViewBag.FailedProfile = "";
             return View();
         }
 
@@ -131,10 +132,11 @@ namespace DatingHemsida_Grupp_9.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")] Profile profile)
-        {
+        {if (ModelState.IsValid) {
+               
             try
             {
-               
+                
 
                 var pic = profile.ImageFile;
                 if (pic == null)
@@ -174,8 +176,12 @@ namespace DatingHemsida_Grupp_9.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-        }
+        }else {
 
+                return RedirectToAction(nameof(Index));
+                
+    }
+        } 
         // GET: ProfileController/Edit/5
         public ActionResult Edit()
         {
