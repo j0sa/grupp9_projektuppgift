@@ -145,31 +145,31 @@ namespace DatingHemsida_Grupp_9.Controllers
         }
 
         // GET: Wall/Details/5
-        public ActionResult GetMessages(int id)
-        {
-            var databaseMessages = _DatingContext.Messages.Where(x => x.ReciverId == id);
-            //Hämtar alla profiler i databas
-            var profiles = _DatingContext.Profiles.ToList();
+        //public ActionResult GetMessages(int id)
+        //{
+        //    var databaseMessages = _DatingContext.Messages.Where(x => x.ReciverId == id);
+        //    //Hämtar alla profiler i databas
+        //    var profiles = _DatingContext.Profiles.ToList();
 
-            List<Message> messages = new List<Message>();
+        //    List<Message> messages = new List<Message>();
 
 
-            foreach (var m in databaseMessages)
-            {
-                Message message = new Message()
-                {
-                    MessageId = m.MessageId,
-                    SenderId = m.SenderId,
-                    ReciverId = m.ReciverId,
-                    Text = m.Text,
-                    Date = m.Date,
-                    Author = profiles.Single(x => x.Id == m.SenderId).Firstname
-                };
-                messages.Add(message);
-            };
-            return View("Index", "Wall");
-            //return PartialView("_Messeges", messages);
-        }
+        //    foreach (var m in databaseMessages)
+        //    {
+        //        Message message = new Message()
+        //        {
+        //            MessageId = m.MessageId,
+        //            SenderId = m.SenderId,
+        //            ReciverId = m.ReciverId,
+        //            Text = m.Text,
+        //            Date = m.Date,
+        //            Author = profiles.Single(x => x.Id == m.SenderId).Firstname
+        //        };
+        //        messages.Add(message);
+        //    };
+        //    return View("Index", "Wall");
+        //    //return PartialView("_Messeges", messages);
+        //}
 
         [HttpGet]
         public PartialViewResult GetAddressForjQuery(string category)
