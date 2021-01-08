@@ -88,7 +88,7 @@ namespace DatingHemsida_Grupp_9.Controllers
                         ReciverId = m.ReciverId,
                         Text = m.Text,
                         Date = m.Date,
-                        Author = profiles.Single(x => x.Id == m.SenderId).Firstname
+                        Author = profiles.Single(x => x.Id == m.SenderId).Firstname + " " + profiles.Single(x => x.Id == m.SenderId).Lastname
                     };
                     messages1.Add(message);
                 };
@@ -144,39 +144,6 @@ namespace DatingHemsida_Grupp_9.Controllers
             }
         }
 
-        // GET: Wall/Details/5
-        //public ActionResult GetMessages(int id)
-        //{
-        //    var databaseMessages = _DatingContext.Messages.Where(x => x.ReciverId == id);
-        //    //Hämtar alla profiler i databas
-        //    var profiles = _DatingContext.Profiles.ToList();
-
-        //    List<Message> messages = new List<Message>();
-
-
-        //    foreach (var m in databaseMessages)
-        //    {
-        //        Message message = new Message()
-        //        {
-        //            MessageId = m.MessageId,
-        //            SenderId = m.SenderId,
-        //            ReciverId = m.ReciverId,
-        //            Text = m.Text,
-        //            Date = m.Date,
-        //            Author = profiles.Single(x => x.Id == m.SenderId).Firstname
-        //        };
-        //        messages.Add(message);
-        //    };
-        //    return View("Index", "Wall");
-        //    //return PartialView("_Messeges", messages);
-        //}
-
-        [HttpGet]
-        public PartialViewResult GetAddressForjQuery(string category)
-        {
-            return PartialView("_address");
-        }
-
         [HttpGet]
         public PartialViewResult DisplayMessage(Message message)
         {
@@ -199,50 +166,13 @@ namespace DatingHemsida_Grupp_9.Controllers
                     ReciverId = m.ReciverId,
                     Text = m.Text,
                     Date = m.Date,
-                    Author = profiles.Single(x => x.Id == m.SenderId).Firstname
+                    Author = profiles.Single(x => x.Id == m.SenderId).Firstname +" "+ profiles.Single(x => x.Id == m.SenderId).Lastname
                 };
                 messages.Add(message1);
             };
             return PartialView("_Messeges", messages);
         }
-        //    //List<Message> messages = databaseMessages.Select(m => new Message
-        //    //{
-        //    //    MessageId = m.MessageId,
-        //    //    SenderId = m.SenderId,
-        //    //    ReciverId = m.ReciverId,
-        //    //    Text = m.Text,
-        //    //    Date = m.Date,
-        //    //    Author = profiles.SingleOrDefault(x => x.Id == m.SenderId).Firstname
-        //    //}).ToList();
-
-
-
-        //    //return new PartialViewResult
-        //    //{
-        //    //    ViewName = "_Messages",
-        //    //    ViewData = new ViewDataDictionary
-        //    //    <List<Message>>(ViewData, messages)
-        //    //};
-
-
-
-        //    //var profiles = profileEntities.Select(p => new Profile
-        //    //{
-        //    //    Id = p.Id,
-        //    //    Firstname = p.Firstname,
-        //    //    Lastname = p.Lastname,
-        //    //    Gender = p.Gender,
-        //    //    Age = p.Age,
-        //    //    Active = p.Active,
-        //    //    Email = p.Email,
-        //    //    SexualOrientation = p.SexualOrientation,
-
-        //    //    UserPicture = p.UserPicture
-        //    //}).ToList();
-        //    // Author = profiles.Single(x => x.Id == m.SenderId).Firstname
-
-        //}
-        // GET: Wall/Create
+        
         public ActionResult Create()
         {
             return View();

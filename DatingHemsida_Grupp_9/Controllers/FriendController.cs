@@ -1,7 +1,6 @@
 ﻿using DataLayer;
 using DataLayer.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,27 +17,33 @@ namespace DatingHemsida_Grupp_9.Controllers
             _DatingContext = datingContext;
         }
 
-        // GET: FriendRequestController
         
+
+        [HttpGet]
         public ActionResult Index()
 
         {
-            //Kontrollerar navbar
+           
             FriendRequestVisible();
 
-            //Hämtar inloggade användarens vänner via email och id
-            var user = User.Identity.Name;
-            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+            //Hämtar inloggade användarens vänner via email
+            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(User.Identity.Name));
+            
             if (profile == null)
             {
                 return RedirectToAction("Index", "Home");
             }
+
             var id = profile.Id;
+            /*
+            Skapar två listor, en bestående av profiler där vänförfrågningar som den inloggade skickat är 
+            accepterade och en av profiler där den inloggade tagit emot och accepterat vänförfrågningar.
+            Sedan sätts dessa två listor ihop för att skapa en stor vänlista
+             */
+            var senderList = _DatingContext.FriendRequests.Where(x => x.FriendSenderId.Equals(id)).Where(x => x.Accepted == true).Select(x => x.FriendReciverId).ToList();
+            var receiverList = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == true).Select(x => x.FriendSenderId).ToList();
 
-            var lista = _DatingContext.FriendRequests.Where(x => x.FriendSenderId.Equals(id)).Where(x => x.Accepted == true).Select(x => x.FriendReciverId).ToList();
-            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == true).Select(x => x.FriendSenderId).ToList();
-
-            var combinedList = lista.Concat(listatva).ToList();
+            var combinedList = senderList.Concat(receiverList).ToList();
 
             List<Profile> profileEntities = new List<Profile>();
 
@@ -65,15 +70,14 @@ namespace DatingHemsida_Grupp_9.Controllers
             return View(profiles);
         }
 
-        // GET: FriendRequestController/Details/5
+        [HttpGet]
         public ActionResult Requests()
         {
-            //Kontrollerar navbar
+            
             FriendRequestVisible();
 
-            //Hämtar inloggade användarens vänner via email och id
-            var user = User.Identity.Name;
-            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+            //Hämtar inloggade användarens vänner via email
+            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(User.Identity.Name));
 
             if (profile == null)
             {
@@ -82,11 +86,12 @@ namespace DatingHemsida_Grupp_9.Controllers
 
             var id = profile.Id;
 
-            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
+            //Lista av vänförfrågningar
+            var receiverList = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id)).Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
 
             List<Profile> profileEntities = new List<Profile>();
 
-            foreach (var i in listatva)
+            foreach (var i in receiverList)
             {
                 var friend = _DatingContext.Profiles.SingleOrDefault(p => p.Id == i);
 
@@ -109,29 +114,26 @@ namespace DatingHemsida_Grupp_9.Controllers
             return View(profiles);
         }
 
-       
         [HttpPost]
         public ActionResult AcceptDecline(int FriendId, string AcceptDecline)
         {
-            //Hämtar användarId
-            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name);
-            var UserId = user.Id;
-
+           
+            var UserId = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name).Id;
+            
             //Hittar rätt rad i Db för att kunna uppdatera den
-            var friendFind = _DatingContext.FriendRequests.FirstOrDefault
+            var friendFound = _DatingContext.FriendRequests.FirstOrDefault
             (x => x.FriendReciverId == UserId && x.FriendSenderId == FriendId);
 
             // Om ej null och Accept
-            if (AcceptDecline == "Accept" && friendFind != null)
+            if (AcceptDecline == "Accept" && friendFound != null)
             {
-                friendFind.Accepted = true;
-
+                friendFound.Accepted = true;
                 _DatingContext.SaveChanges();
             }
             // Om ej null och Decline
-            else if (AcceptDecline == "Decline" && friendFind != null)
+            else if (AcceptDecline == "Decline" && friendFound != null)
             {
-                _DatingContext.Remove(friendFind);
+                _DatingContext.Remove(friendFound);
                 _DatingContext.SaveChanges();
             }
 
@@ -141,7 +143,6 @@ namespace DatingHemsida_Grupp_9.Controllers
         [HttpPost]
         public ActionResult AddFriend(int reciverId)
         {
-
             var UserName = User.Identity.Name;
             int user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
 
@@ -150,13 +151,11 @@ namespace DatingHemsida_Grupp_9.Controllers
                 FriendSenderId = user,
                 FriendReciverId = reciverId,
                 Accepted = false,
-
             };
             _DatingContext.FriendRequests.Add(friendRequest);
             _DatingContext.SaveChanges();
 
-            return RedirectToAction("Index", "Wall", new {profileId=reciverId}); ;
-
+            return RedirectToAction("Index", "Wall", new { profileId = reciverId }); ;
         }
 
         [HttpPost]
@@ -186,8 +185,8 @@ namespace DatingHemsida_Grupp_9.Controllers
             ViewBag.Requests = false;
             var user = User.Identity.Name;
             var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
-                
-            if (user != null&&profile!=null)
+
+            if (user != null && profile != null)
             {
                 var id = profile.Id;
 
@@ -198,74 +197,6 @@ namespace DatingHemsida_Grupp_9.Controllers
                 {
                     ViewBag.Requests = true;
                 }
-            }
-        }
-
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: FriendRequestController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: FriendRequestController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: FriendRequestController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: FriendRequestController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: FriendRequestController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: FriendRequestController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
             }
         }
     }
