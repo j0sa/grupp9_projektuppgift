@@ -78,6 +78,29 @@
     <script>
 
        
+        //function reLoad() { $('#pictures').load('/Home/GetPicture'); };
+
+        
+
+
+       function updatePartial() {
+           var message = {};
+           message.reciverId = $('#id').val();
+           
+           $.ajax({
+               url: "Wall/DisplayMessage",
+               type: "GET",
+               data: message,
+               //contentType: "application/json",
+               //dataType: "json",
+
+
+
+           }).done(function (partialViewResult) {
+               $("#testDiv").html(partialViewResult);
+
+           });
+        };
 
        //setInterval(function () {
        //    var profile = {};
@@ -96,64 +119,103 @@
 
        //    });
        //}, 500); //5 seconds
-       $(() =>
+        $(() =>
 
-           $("#sendButton").click((e) => {
-               e.preventDefault();
+            $("#sendButton").click((e) => {
+                e.preventDefault();
+                //(function () {
+                //    alert("tereererer")
+                //    $("#testDiv").load('/Wall/GetAddressForjQuery');
+                //});
 
+                var message = {};
+                message.text = $('#messageBody').val();
+                //$('#messageBody').val("");
 
-               var message = {};
-               message.text = $('#messageBody').val();
-               $('#messageBody').val("");
-
-               message.reciverId = $('#id').val();
-
-
-               if (message.text.length >= 1 && message.text.length <= 255) {
-
-
-                   $.ajax({
-                       type: "POST",
-                       url: "/api/MessageAPI/postMessage",
-                       data: JSON.stringify(message),
-                       contentType: "application/json",
-                       dataType: "json",
-                       //success: location.reload()
-
-                   });
+                message.reciverId = $('#id').val();
 
 
+                if (message.text.length >= 1 && message.text.length <= 255) {
+                    test();
+                    
+                    async function test() {
 
-               } else {
-                   alert("Please enter a valid message");
-               }
+                        try {
+                            alert("try")
+                            await postMessage()
+                            updatePartial();
+                            alert("testwait")
+                        } catch (err) { }
+                    }
+
+                    alert("igenom")
+
+                } else {
+                    alert("Please enter a valid message");
+                }
+
+                //function postMessage() {
+                //    $.ajax({
+                //        type: "POST",
+                //        url: "/api/MessageAPI/postMessage",
+                //        data: JSON.stringify(message),
+                //        contentType: "application/json",
+                //        dataType: "json",
+                //        //success: location.reload()
+
+                //    });
+                //};
+
+                //(function () {
+                //    alert("tereererer")
+                //    $("#testDiv").load('/Wall/GetAddressForjQuery');
+                //});        
+
+                //function GetMessages() {
+                //    alert("GetMessages")
+                //    $.ajax({
+                //        url: "DisplayMessage",
+                //        type: "POST",
+                //        cache: false,
+                //        async: true,
+                //        dataType: html
+                //    })
+                //        .done(function (result) {
+                //            $("#testDiv").html(result);
+                //        })
+                //}
+
+                //$.ajax({
+                //    url: "Wall/DisplayMessage",
+                //    type: "GET",
+                //    success: function (response) {
+                //        $("#testDiv").html(response)
+                //    }
+                //});
+            })
 
 
+           
 
-               //function GetMessages() {
-               //    alert("GetMessages")
-               //    $.ajax({
-               //        url: "DisplayMessage",
-               //        type: "POST",
-               //        cache: false,
-               //        async: true,
-               //        dataType: html
-               //    })
-               //        .done(function (result) {
-               //            $("#testDiv").html(result);
-               //        })
-               //}
-
-               //$.ajax({
-               //    url: "Wall/DisplayMessage",
-               //    type: "GET",
-               //    success: function (response) {
-               //        $("#testDiv").html(response)
-               //    }
-               //});
-           })
        );
+        function postMessage() {
+            var message = {};
+            message.text = $('#messageBody').val();
+            $('#messageBody').val("");
 
+
+            message.reciverId = $('#id').val();
+            $.ajax({
+                type: "POST",
+                url: "/api/MessageAPI/postMessage",
+                data: JSON.stringify(message),
+                contentType: "application/json",
+                dataType: "json",
+                //success: location.reload()
+
+            });
+            alert("Post")
+        };
 
 
 

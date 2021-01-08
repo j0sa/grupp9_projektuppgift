@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -89,7 +90,7 @@ namespace DatingHemsida_Grupp_9.Controllers
         // POST api/<MessageController>
         [HttpPost]
         [Route("postmessage")]
-        public void SendMessage([FromBody] Message message)
+        public async Task SendMessage([FromBody] Message message)
         {
 
             var UserName = User.Identity.Name;
@@ -103,11 +104,13 @@ namespace DatingHemsida_Grupp_9.Controllers
                 Date = DateTime.Now
             };
             _DatingContext.Messages.Add(databaseMessage);
-            _DatingContext.SaveChanges();
+            await _DatingContext.SaveChangesAsync();
 
             
 
         }
+
+       
 
         // PUT api/<MessageController>/5
         [HttpPut("{id}")]

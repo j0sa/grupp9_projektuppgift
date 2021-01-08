@@ -171,35 +171,40 @@ namespace DatingHemsida_Grupp_9.Controllers
             //return PartialView("_Messeges", messages);
         }
 
+        [HttpGet]
+        public PartialViewResult GetAddressForjQuery(string category)
+        {
+            return PartialView("_address");
+        }
+
+        [HttpGet]
+        public PartialViewResult DisplayMessage(Message message)
+        {
+            var UserName = User.Identity.Name;
+            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
+
+            var databaseMessages = _DatingContext.Messages.Where(x => x.ReciverId == message.ReciverId);
+            //Hämtar alla profiler i databas
+            var profiles = _DatingContext.Profiles.ToList();
+
+            List<Message> messages = new List<Message>();
 
 
-        //[HttpGet]
-        //public IActionResult DisplayMessage([FromBody] Profile profile)
-        //{
-        //    var UserName = User.Identity.Name;
-        //    var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
-
-        //    var databaseMessages = _DatingContext.Messages.Where(x => x.ReciverId == profile.Id);
-        //    //Hämtar alla profiler i databas
-        //    var profiles = _DatingContext.Profiles.ToList();
-
-        //    List<Message> messages = new List<Message>();
-
-
-        //    foreach (var m in databaseMessages)
-        //    {
-        //        Message message = new Message()
-        //        {
-        //            MessageId = m.MessageId,
-        //            SenderId = m.SenderId,
-        //            ReciverId = m.ReciverId,
-        //            Text = m.Text,
-        //            Date = m.Date,
-        //            Author = profiles.Single(x => x.Id == m.SenderId).Firstname
-        //        };
-        //        messages.Add(message);
-        //    };
-
+            foreach (var m in databaseMessages)
+            {
+                Message message1 = new Message()
+                {
+                    MessageId = m.MessageId,
+                    SenderId = m.SenderId,
+                    ReciverId = m.ReciverId,
+                    Text = m.Text,
+                    Date = m.Date,
+                    Author = profiles.Single(x => x.Id == m.SenderId).Firstname
+                };
+                messages.Add(message1);
+            };
+            return PartialView("_Messeges", messages);
+        }
         //    //List<Message> messages = databaseMessages.Select(m => new Message
         //    //{
         //    //    MessageId = m.MessageId,
@@ -210,7 +215,7 @@ namespace DatingHemsida_Grupp_9.Controllers
         //    //    Author = profiles.SingleOrDefault(x => x.Id == m.SenderId).Firstname
         //    //}).ToList();
 
-        //    return PartialView("_Messeges", messages);
+
 
         //    //return new PartialViewResult
         //    //{
