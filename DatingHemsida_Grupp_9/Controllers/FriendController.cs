@@ -17,18 +17,15 @@ namespace DatingHemsida_Grupp_9.Controllers
             _DatingContext = datingContext;
         }
 
-        
-
         [HttpGet]
         public ActionResult Index()
 
         {
-           
             FriendRequestVisible();
 
             //Hämtar inloggade användarens vänner via email
             var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(User.Identity.Name));
-            
+
             if (profile == null)
             {
                 return RedirectToAction("Index", "Home");
@@ -36,7 +33,7 @@ namespace DatingHemsida_Grupp_9.Controllers
 
             var id = profile.Id;
             /*
-            Skapar två listor, en bestående av profiler där vänförfrågningar som den inloggade skickat är 
+            Skapar två listor, en bestående av profiler där vänförfrågningar som den inloggade skickat är
             accepterade och en av profiler där den inloggade tagit emot och accepterat vänförfrågningar.
             Sedan sätts dessa två listor ihop för att skapa en stor vänlista
              */
@@ -73,7 +70,6 @@ namespace DatingHemsida_Grupp_9.Controllers
         [HttpGet]
         public ActionResult Requests()
         {
-            
             FriendRequestVisible();
 
             //Hämtar inloggade användarens vänner via email
@@ -117,9 +113,8 @@ namespace DatingHemsida_Grupp_9.Controllers
         [HttpPost]
         public ActionResult AcceptDecline(int FriendId, string AcceptDecline)
         {
-           
             var UserId = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name).Id;
-            
+
             //Hittar rätt rad i Db för att kunna uppdatera den
             var friendFound = _DatingContext.FriendRequests.FirstOrDefault
             (x => x.FriendReciverId == UserId && x.FriendSenderId == FriendId);
@@ -140,12 +135,16 @@ namespace DatingHemsida_Grupp_9.Controllers
             return RedirectToAction(nameof(Requests));
         }
 
+        /*
+         Metod för att skicka vänförfrågan
+         */
+
         [HttpPost]
         public ActionResult AddFriend(int reciverId)
         {
-            var UserName = User.Identity.Name;
-            int user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
+            int user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name).Id;
 
+            //Ny rad i databasen med accepted som false
             DataLayer.Models.FriendRequest friendRequest = new DataLayer.Models.FriendRequest()
             {
                 FriendSenderId = user,
@@ -158,18 +157,19 @@ namespace DatingHemsida_Grupp_9.Controllers
             return RedirectToAction("Index", "Wall", new { profileId = reciverId }); ;
         }
 
+        /*
+         Metod för att ta bort en vän
+         */
+
         [HttpPost]
         public ActionResult RemoveFriend(int FriendId)
         {
-            //Hämtar användarId
-            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name);
-            var UserId = user.Id;
+            var UserId = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name).Id;
 
             //Hittar rätt rad i Db för att kunna uppdatera den
             var friendFind = _DatingContext.FriendRequests.FirstOrDefault
             (x => x.FriendReciverId == UserId && x.FriendSenderId == FriendId && x.Accepted == true);
 
-            // Om ej null
             if (friendFind != null)
             {
                 _DatingContext.Remove(friendFind);
@@ -179,9 +179,14 @@ namespace DatingHemsida_Grupp_9.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /*
+         Metod för att visa om det finns nya vänförfrågningar
+         */
+
+        [HttpGet]
         public void FriendRequestVisible()
         {
-            //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
+            //Skickar true eller false för att visa passande text i navbar
             ViewBag.Requests = false;
             var user = User.Identity.Name;
             var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
@@ -190,10 +195,10 @@ namespace DatingHemsida_Grupp_9.Controllers
             {
                 var id = profile.Id;
 
-                var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
+                var listNotAccepted = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
                     .Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
 
-                if (listatva.Count > 0)
+                if (listNotAccepted.Count > 0)
                 {
                     ViewBag.Requests = true;
                 }

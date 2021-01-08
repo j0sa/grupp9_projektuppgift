@@ -12,48 +12,46 @@ namespace DatingHemsida_Grupp_9.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly DatingContext _datingContext;
+        private readonly DatingContext _DatingContext;
 
         public HomeController(ILogger<HomeController> logger, DatingContext datingContext)
         {
             _logger = logger;
-            _datingContext = datingContext;
+            _DatingContext = datingContext;
         }
 
         public IActionResult Index()
         {
-            try
-            {
+           
+                //Randomiserar profiler som sedan skickas vidare för att visas som exempelprofiler på startsidan
                 Random random = new Random();
-                int count = random.Next(0, _datingContext.Profiles.Where(x => x.Active == true).Count());
+                int count = random.Next(0, _DatingContext.Profiles.Where(x => x.Active == true).Count());
                 var profileEntities = new List<DataLayer.Models.Profile>();
 
                 int userId;
                 var userName = User.Identity.Name;
-                var profile = _datingContext.Profiles.SingleOrDefault(p => p.Email.Equals(userName));
+                var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(userName));
 
                 if (User.Identity.IsAuthenticated && profile!=null)
                 {
                     
-                    userId = _datingContext.Profiles.SingleOrDefault(p => p.Email == userName).Id;
-                    
+                    userId = _DatingContext.Profiles.SingleOrDefault(p => p.Email == userName).Id;
                 }
                 else
                 {
-                    userId = 0;
-                    
-                    
+                    userId = 0;  
                 }
 
-                profileEntities = _datingContext.Profiles.Where(x => x.Active == true && x.Id != userId).OrderBy(x => Guid.NewGuid()).Take(3).ToList();
+                profileEntities = _DatingContext.Profiles.Where(x => x.Active == true && x.Id != userId).OrderBy(x => Guid.NewGuid()).Take(3).ToList();
 
-                //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
+                //Skickar false till vyn för att knappen friendrequests först ej ska synas
                 ViewBag.Requests = false;
 
                 if (userName != null && profile != null)
                 {
                     FriendRequestVisible();
                 }
+                //Om inloggad men ej skapat profil
                 else if (userName != null && profile == null)
                 {
                     return RedirectToAction("Create", "Profile");
@@ -75,24 +73,19 @@ namespace DatingHemsida_Grupp_9.Controllers
                 }).ToList();
 
                 return View(profiles);
-            }
-            catch (Exception e)
-            {
-                return RedirectToAction("Create", "Profile");
-            }
         }
 
         public void FriendRequestVisible()
         {
             //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
             ViewBag.Requests = false;
-            var user = User.Identity.Name;
+            
 
-            var profile = _datingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
+            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(User.Identity.Name));
 
             var id = profile.Id;
 
-            var listatva = _datingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
+            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
                 .Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
 
             if (listatva.Count > 0)
