@@ -2,7 +2,6 @@
 using DatingHemsida_Grupp_9.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -24,56 +23,51 @@ namespace DatingHemsida_Grupp_9.Controllers
             this._hostEnvironment = hostEnvironment;
         }
 
-        // GET: ProfileController
+        /*
+         * Sökfunktionen
+         * Kan söka på gender eller efter för-/efternamn
+         * Om inget anges så visas endast alla användare som satt sin profil som aktiv
+         */
+
         public ActionResult Index(string searchString, string searchGender)
         {
             ViewBag.NoResult = "";
-            //Kontrollerar navbar
             FriendRequestVisible();
-
-            var user = User.Identity.Name;
-            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
-
+            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(User.Identity.Name));
+            //Om ej skapat profil - skickas tillbaka till startsidan som sedan skickar vidare till skapa profil
             if (profile == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-
-
-
             var profileEntities = new List<DataLayer.Models.Profile>();
-
             if (!String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(searchGender))
             {
-                profileEntities = _DatingContext.Profiles.Where(x => x.Active==true && x.Firstname.Contains(searchString) && x.Gender.Equals(searchGender)
-                || x.Active == true && x.Lastname.Contains(searchString) && x.Gender.Equals(searchGender)).OrderBy(x => x.Firstname).ToList();
+                profileEntities = _DatingContext.Profiles.Where(x => x.Active == true && x.Firstname.Contains(searchString) && x.Gender.Equals(searchGender)
+                    || x.Active == true && x.Lastname.Contains(searchString) && x.Gender.Equals(searchGender)).OrderBy(x => x.Firstname).ToList();
             }
-            else if (!String.IsNullOrEmpty(searchString)&&searchGender=="")
+            else if (!String.IsNullOrEmpty(searchString) && searchGender == "")
             {
                 profileEntities = _DatingContext.Profiles.Where(x => x.Active == true && x.Firstname.Contains(searchString)
-               || x.Active == true && x.Lastname.Contains(searchString)).OrderBy(x => x.Firstname).ToList();
-
+                    || x.Active == true && x.Lastname.Contains(searchString)).OrderBy(x => x.Firstname).ToList();
             }
             else if (String.IsNullOrEmpty(searchString) && !String.IsNullOrEmpty(searchGender))
             {
-                profileEntities = _DatingContext.Profiles.Where(x => x.Active == true && x.Gender.Equals(searchGender)).OrderBy(x => x.Firstname).ToList();
-
+                profileEntities = _DatingContext.Profiles.Where(x => x.Active == true && x.Gender.Equals(searchGender))
+                    .OrderBy(x => x.Firstname).ToList();
             }
-            else if (!String.IsNullOrEmpty(searchString) && String.IsNullOrEmpty(searchGender)) {
-                profileEntities = _DatingContext.Profiles.Where(x => x.Active == true && x.Firstname.Contains(searchString)|| x.Active == true &&
-                x.Active == true && x.Lastname.Contains(searchString)).OrderBy(x => x.Firstname).ToList();
-
-
+            else if (!String.IsNullOrEmpty(searchString) && String.IsNullOrEmpty(searchGender))
+            {
+                profileEntities = _DatingContext.Profiles.Where(x => x.Active == true && x.Firstname.Contains(searchString) || x.Active == true &&
+                    x.Active == true && x.Lastname.Contains(searchString)).OrderBy(x => x.Firstname).ToList();
             }
-
-            else { profileEntities = _DatingContext.Profiles.Where(x=>x.Active==true).ToList(); }
-
-            
-
-            if (profileEntities.Count()==0) {
+            else
+            {
+                profileEntities = _DatingContext.Profiles.Where(x => x.Active == true).ToList();
+            }
+            if (profileEntities.Count() == 0)
+            {
                 ViewBag.NoResult = "No result!";
             }
-
             var profiles = profileEntities.Select(p => new Profile
             {
                 Id = p.Id,
@@ -83,36 +77,9 @@ namespace DatingHemsida_Grupp_9.Controllers
                 Age = p.Age,
                 Active = p.Active,
                 Email = p.Email,
-                SexualOrientation = p.SexualOrientation,
-
-                UserPicture = p.UserPicture
+                SexualOrientation = p.SexualOrientation
             }).ToList();
-
             return View(profiles);
-        }
-
-        // GET: ProfileController/Details/5
-        public ActionResult Details()
-        {
-            //Kontrollerar navbar
-            FriendRequestVisible();
-
-            var UserName = User.Identity.Name;
-            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
-
-            Profile profile1 = new Profile
-            {
-                Id = user.Id,
-                Firstname = user.Firstname,
-                Lastname = user.Lastname,
-                Gender = user.Gender,
-                UserPicture = user.UserPicture,
-                Age = user.Age,
-                SexualOrientation = user.SexualOrientation,
-
-                ImagePath = user.ImagePath
-            };
-            return View(profile1);
         }
 
         // GET: ProfileController/Create
@@ -124,7 +91,6 @@ namespace DatingHemsida_Grupp_9.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            ViewBag.FailedProfile = "";
             return View();
         }
 
@@ -132,77 +98,69 @@ namespace DatingHemsida_Grupp_9.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")] Profile profile)
-        {if (ModelState.IsValid) {
-               
-            try
+        {
+            if (ModelState.IsValid)
             {
-                
-
-                var pic = profile.ImageFile;
-                if (pic == null)
+                try
                 {
-                    profile.ImagePath = "StandardProfil.png";
-                }
-                else
-                {
-                    string wwwRootPath = _hostEnvironment.WebRootPath;
-                    string filename = Path.GetFileNameWithoutExtension(profile.ImageFile.FileName);
-                    string extension = Path.GetExtension(profile.ImageFile.FileName);
-                    profile.ImagePath = filename = filename + DateTime.Now.ToString("yymmssfff") + extension;
-                    string path = Path.Combine(wwwRootPath + "/Image", filename);
-                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    var pic = profile.ImageFile;
+                    if (pic == null)
                     {
-                        await profile.ImageFile.CopyToAsync(fileStream);
+                        profile.ImagePath = "StandardProfil.png";
                     }
+                    else
+                    {
+                        string wwwRootPath = _hostEnvironment.WebRootPath;
+                        string filename = Path.GetFileNameWithoutExtension(profile.ImageFile.FileName);
+                        string extension = Path.GetExtension(profile.ImageFile.FileName);
+                        profile.ImagePath = filename = filename + DateTime.Now.ToString("yymmssfff") + extension;
+                        string path = Path.Combine(wwwRootPath + "/Image", filename);
+                        using (var fileStream = new FileStream(path, FileMode.Create))
+                        {
+                            await profile.ImageFile.CopyToAsync(fileStream);
+                        }
+                    }
+                    _DatingContext.Profiles.Add(new DataLayer.Models.Profile
+                    {
+                        Firstname = profile.Firstname,
+                        Lastname = profile.Lastname,
+                        Gender = profile.Gender,
+                        Active = true,
+                        Age = profile.Age,
+                        Email = User.Identity.Name.ToString(),
+                        SexualOrientation = profile.SexualOrientation,
+                        ImagePath = profile.ImagePath
+                    });
+                    await _DatingContext.SaveChangesAsync();
+                    return RedirectToAction("index", "Wall");
                 }
-
-                _DatingContext.Profiles.Add(new DataLayer.Models.Profile
+                catch
                 {
-                    Firstname = profile.Firstname,
-                    Lastname = profile.Lastname,
-                    Gender = profile.Gender,
-                    UserPicture = profile.UserPicture,
-                    Active = true,
-                    Age = profile.Age,
-                    Email = User.Identity.Name.ToString(),
-                    SexualOrientation = profile.SexualOrientation,
-                    ImagePath = profile.ImagePath
-                });
-                await _DatingContext.SaveChangesAsync();
-
-                return RedirectToAction("index","Wall");
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            catch
+            else
             {
-                return RedirectToAction(nameof(Index));
+                return View();
             }
-        }else {
+        }
 
-                return RedirectToAction(nameof(Index));
-                
-    }
-        } 
         // GET: ProfileController/Edit/5
         public ActionResult Edit()
         {
             //Kontrollerar navbar
             FriendRequestVisible();
-
-            var UserName = User.Identity.Name;
-            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
-
+            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name);
             if (user == null)
             {
                 return RedirectToAction("Index", "Home");
             }
-
-            Profile profile1 = new Profile
+            Profile profile = new Profile
             {
                 Id = user.Id,
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
                 Gender = user.Gender,
-                UserPicture = user.UserPicture,
                 Active = user.Active,
                 Age = user.Age,
                 Email = user.Email,
@@ -210,141 +168,83 @@ namespace DatingHemsida_Grupp_9.Controllers
                 ImagePath = user.ImagePath
             };
             TempData["img"] = user.ImagePath;
-            return View(profile1);
+            return View(profile);
         }
-
-        //public void DeletePicture()
-        //{
-        //    string wwwRootPath = _hostEnvironment.WebRootPath;
-        //    var UserName = User.Identity.Name;
-        //    string imgPath = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).ImagePath;
-
-        //    var fullPath = Path.Combine(wwwRootPath + "/Image", imgPath);
-        //    if (imgPath != "StandardProfil.png")
-        //    {
-        //        System.IO.File.Delete(fullPath);
-        //    }
-        //}
 
         // POST: ProfileController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")] Profile profile)
         {
-            try
+            if (ModelState.IsValid)
             {
-                //Uppdaterar hela profilen inklusive bild
-                if (profile.ImageFile != null)
+                try
                 {
-                    //DeletePicture();
-                    string wwwRootPath = _hostEnvironment.WebRootPath;
-                    //var UserName = User.Identity.Name;
-                    //string imgPath = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).ImagePath;
-
-                    //var fullPath = Path.Combine(wwwRootPath + "/Image", imgPath);
-                    //if (imgPath != "StandardProfil.png")
-                    //{
-                    //    System.IO.File.Delete(fullPath);
-                    //}
-
-
-                    
-                    string filename = Path.GetFileNameWithoutExtension(profile.ImageFile.FileName);
-                    string extension = Path.GetExtension(profile.ImageFile.FileName);
-                    profile.ImagePath = filename = filename + DateTime.Now.ToString("yymmssfff") + extension;
-                    string path = Path.Combine(wwwRootPath + "/Image", filename);
-                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    //Uppdaterar hela profilen inklusive bild
+                    if (profile.ImageFile != null)
                     {
-                        await profile.ImageFile.CopyToAsync(fileStream);
+                        string wwwRootPath = _hostEnvironment.WebRootPath;
+                        string filename = Path.GetFileNameWithoutExtension(profile.ImageFile.FileName);
+                        string extension = Path.GetExtension(profile.ImageFile.FileName);
+                        profile.ImagePath = filename = filename + DateTime.Now.ToString("yymmssfff") + extension;
+                        string path = Path.Combine(wwwRootPath + "/Image", filename);
+                        using (var fileStream = new FileStream(path, FileMode.Create))
+                        {
+                            await profile.ImageFile.CopyToAsync(fileStream);
+                        }
+                        _DatingContext.Profiles.Update(new DataLayer.Models.Profile
+                        {
+                            Id = profile.Id,
+                            Firstname = profile.Firstname,
+                            Lastname = profile.Lastname,
+                            Gender = profile.Gender,
+                            Active = profile.Active,
+                            Age = profile.Age,
+                            Email = User.Identity.Name.ToString(),
+                            SexualOrientation = profile.SexualOrientation,
+                            ImagePath = profile.ImagePath
+                        });
+                        await _DatingContext.SaveChangesAsync();
                     }
-
-                    _DatingContext.Profiles.Update(new DataLayer.Models.Profile
+                    //Uppdaterar profil men behåller tidigare bild om ingen ny laddats upp
+                    else
                     {
-                        Id = profile.Id,
-                        Firstname = profile.Firstname,
-                        Lastname = profile.Lastname,
-                        Gender = profile.Gender,
-                        UserPicture = profile.UserPicture,
-                        Active = profile.Active,
-                        Age = profile.Age,
-                        Email = User.Identity.Name.ToString(),
-                        SexualOrientation = profile.SexualOrientation,
-                        ImagePath = profile.ImagePath
-                    });
-                    await _DatingContext.SaveChangesAsync();
+                        _DatingContext.Profiles.Update(new DataLayer.Models.Profile
+                        {
+                            Id = profile.Id,
+                            Firstname = profile.Firstname,
+                            Lastname = profile.Lastname,
+                            Gender = profile.Gender,
+                            Active = profile.Active,
+                            Age = profile.Age,
+                            Email = profile.Email,
+                            SexualOrientation = profile.SexualOrientation,
+                            ImagePath = TempData["img"] as string
+                        });
+                        _DatingContext.SaveChanges();
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                //Uppdaterar profil men behåller tidigare bild om ingen ny laddats upp
-                else
+                catch
                 {
-                    _DatingContext.Profiles.Update(new DataLayer.Models.Profile
-                    {
-                        Id = profile.Id,
-                        Firstname = profile.Firstname,
-                        Lastname = profile.Lastname,
-                        Gender = profile.Gender,
-                        UserPicture = profile.UserPicture,
-                        Active = profile.Active,
-                        Age = profile.Age,
-                        Email = profile.Email,
-                        SexualOrientation = profile.SexualOrientation,
-                        ImagePath = TempData["img"] as string
-                    }); 
-                    _DatingContext.SaveChanges();
+                    return View();
                 }
-                return RedirectToAction(nameof(Index));
             }
-            catch
+            else
             {
                 return View();
             }
         }
 
-        // GET: ProfileController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            var UserName = User.Identity.Name;
-            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
-
-            Profile profile1 = new Profile
-            {
-                Id = user.Id,
-                Firstname = user.Firstname,
-                Lastname = user.Lastname,
-                Gender = user.Gender,
-                UserPicture = user.UserPicture
-            };
-            return View(profile1);
-        }
-
-        // POST: ProfileController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
+        //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
         public void FriendRequestVisible()
         {
-            //Skickar true or false till vyn för att visa knappen friendrequests om det finns några
             ViewBag.Requests = false;
-            var user = User.Identity.Name;
-            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
-            if (user != null && profile!=null)
+            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(User.Identity.Name));
+            if (User.Identity.Name != null && profile != null)
             {
-                
-                var id = profile.Id;
-
-                var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
+                var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReceiverId.Equals(profile.Id))
                     .Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
-
                 if (listatva.Count > 0)
                 {
                     ViewBag.Requests = true;

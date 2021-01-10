@@ -4,7 +4,6 @@ using DatingHemsida_Grupp_9.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,80 +22,56 @@ namespace DatingHemsida_Grupp_9.Controllers
         public ActionResult Index(int? profileId)
         // GET: Wall
         {
-            //Hämtar användaren
-            var UserName = User.Identity.Name;
-            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName);
-
+            var shownProfile = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name);
             ViewBag.AddFriend = false;
-
-            //Om inloggad och egen profil skapad
-            if (UserName != null && user != null)
+            if (User.Identity.Name != null && shownProfile != null)
             {
                 FriendRequestVisible();
-
-                //Hämtar alla meddelanden
-                var messages = _DatingContext.Messages.ToList();
-
-                //Skapar en tom lista av meddelanden
-                var mot = new List<DataLayer.Models.Message>();
-
-                //Om en parameterskickas med
+                var messageList = new List<DataLayer.Models.Message>();
                 if (profileId != null)
                 {
                     AddFriendVisible((int)profileId);
-
-                    //Fyller tomma listan baserat på int parametern
-                    mot = messages.Where(x => x.ReciverId == profileId).ToList();
-
-                    //Uppdaterar user till den profil man tryckt på
-                    user = _DatingContext.Profiles.SingleOrDefault(p => p.Id == profileId);
+                    messageList = _DatingContext.Messages.Where(x => x.ReceiverId == profileId).ToList();
+                    shownProfile = _DatingContext.Profiles.SingleOrDefault(p => p.Id == profileId);
                 }
-                //Annars om en parameter inte skickas med
                 else
                 {
-                    //Fyller tomma listan med egna meddelanden
-                    mot = messages.Where(x => x.ReciverId == user.Id).ToList();
+                    messageList = _DatingContext.Messages.Where(x => x.ReceiverId == shownProfile.Id).ToList();
                 }
-
                 //Skapar ny profil för den som ska visas
                 Profile profile = new Profile()
                 {
-                    Id = user.Id,
-                    Firstname = user.Firstname,
-                    Lastname = user.Lastname,
-                    Age = user.Age,
-                    Email = user.Email,
-                    Gender = user.Gender,
-                    SexualOrientation = user.SexualOrientation,
-                    ImagePath = user.ImagePath
+                    Id = shownProfile.Id,
+                    Firstname = shownProfile.Firstname,
+                    Lastname = shownProfile.Lastname,
+                    Age = shownProfile.Age,
+                    Email = shownProfile.Email,
+                    Gender = shownProfile.Gender,
+                    SexualOrientation = shownProfile.SexualOrientation,
+                    ImagePath = shownProfile.ImagePath
                 };
-
-                //Hämtar alla profiler i databas
                 var profiles = _DatingContext.Profiles.ToList();
-
-                //Ny tom lista
-                List<Message> messages1 = new List<Message>();
-
+                List<Message> currentMessages = new List<Message>();
                 //Fyller tomma listan med nya meddelanden från databasen och ger dem en author genom
                 //att jämföra SenderId med profilerna i profiles-listan
-                foreach (var m in mot)
+                foreach (var m in messageList)
                 {
                     Message message = new Message()
                     {
                         MessageId = m.MessageId,
                         SenderId = m.SenderId,
-                        ReciverId = m.ReciverId,
+                        ReceiverId = m.ReceiverId,
                         Text = m.Text,
                         Date = m.Date,
                         Author = profiles.Single(x => x.Id == m.SenderId).Firstname + " " + profiles.Single(x => x.Id == m.SenderId).Lastname
                     };
-                    messages1.Add(message);
+                    currentMessages.Add(message);
                 };
                 //Skapar en viewmodel och fyller den med profil och profilens meddelanden
                 WallViewModel wallViewModel = new WallViewModel()
                 {
                     Profile = profile,
-                    WallMessages = messages1
+                    WallMessages = currentMessages
                 };
 
                 return View(wallViewModel);
@@ -110,8 +85,8 @@ namespace DatingHemsida_Grupp_9.Controllers
             var UserName = User.Identity.Name;
             int user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
 
-            var listOfFriends = _DatingContext.FriendRequests.Where(x => x.FriendSenderId == id && x.FriendReciverId == user ||
-             x.FriendReciverId == id && x.FriendSenderId == user).ToList();
+            var listOfFriends = _DatingContext.FriendRequests.Where(x => x.FriendSenderId == id && x.FriendReceiverId == user ||
+             x.FriendReceiverId == id && x.FriendSenderId == user).ToList();
 
             if (user != id)
             {
@@ -134,7 +109,7 @@ namespace DatingHemsida_Grupp_9.Controllers
             var id = profile.Id;
 
             //Lista av vänförfrågningar
-            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReciverId.Equals(id))
+            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReceiverId.Equals(id))
                 .Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
 
             //Om listan av vänförfrågningar är större än 0
@@ -150,12 +125,11 @@ namespace DatingHemsida_Grupp_9.Controllers
             var UserName = User.Identity.Name;
             var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
 
-            var databaseMessages = _DatingContext.Messages.Where(x => x.ReciverId == message.ReciverId);
+            var databaseMessages = _DatingContext.Messages.Where(x => x.ReceiverId == message.ReceiverId);
             //Hämtar alla profiler i databas
             var profiles = _DatingContext.Profiles.ToList();
 
             List<Message> messages = new List<Message>();
-
 
             foreach (var m in databaseMessages)
             {
@@ -163,16 +137,16 @@ namespace DatingHemsida_Grupp_9.Controllers
                 {
                     MessageId = m.MessageId,
                     SenderId = m.SenderId,
-                    ReciverId = m.ReciverId,
+                    ReceiverId = m.ReceiverId,
                     Text = m.Text,
                     Date = m.Date,
-                    Author = profiles.Single(x => x.Id == m.SenderId).Firstname +" "+ profiles.Single(x => x.Id == m.SenderId).Lastname
+                    Author = profiles.Single(x => x.Id == m.SenderId).Firstname + " " + profiles.Single(x => x.Id == m.SenderId).Lastname
                 };
                 messages.Add(message1);
             };
             return PartialView("_Messeges", messages);
         }
-        
+
         public ActionResult Create()
         {
             return View();

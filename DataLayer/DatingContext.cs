@@ -1,9 +1,5 @@
 ﻿using DataLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 
 namespace DataLayer
 {
@@ -13,19 +9,19 @@ namespace DataLayer
         {
         }
 
-            public DbSet<Profile> Profiles { get; set; }
-       
+        public DbSet<Profile> Profiles { get; set; }
+
         public DbSet<Message> Messages { get; set; }
         public DbSet<FriendRequest> FriendRequests { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Messages
             modelBuilder.Entity<Message>()
-                        .HasOne(m => m.Reciver)
-                        .WithMany(t => t.RecivedMessages)
-                        .HasForeignKey(m => m.ReciverId)
+                        .HasOne(m => m.Receiver)
+                        .WithMany(t => t.ReceivedMessages)
+                        .HasForeignKey(m => m.ReceiverId)
                         .OnDelete(DeleteBehavior.Restrict);
-
 
             modelBuilder.Entity<Message>()
                         .HasOne(m => m.Sender)
@@ -40,14 +36,11 @@ namespace DataLayer
                        .HasForeignKey(m => m.FriendSenderId)
                        .OnDelete(DeleteBehavior.Restrict);
 
-
             modelBuilder.Entity<FriendRequest>()
-                        .HasOne(m => m.FriendReciver)
-                        .WithMany(t => t.RecivedFriendRequests)
-                        .HasForeignKey(m => m.FriendReciverId)
+                        .HasOne(m => m.FriendReceiver)
+                        .WithMany(t => t.ReceivedFriendRequests)
+                        .HasForeignKey(m => m.FriendReceiverId)
                         .OnDelete(DeleteBehavior.Restrict);
         }
-
-
     }
 }

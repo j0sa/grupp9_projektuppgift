@@ -49,11 +49,11 @@
                 <td>
                     @using (Html.BeginForm("Index", "Wall"))
                     {
-                       
-                            <input type="hidden" name="profileId" value="@item.Id" />
-                            <input type="submit" name="Profile" value="Go to profile!" />
+
+                        <input type="hidden" name="profileId" value="@item.Id" />
+                        <input type="submit" name="Profile" value="Go to profile!" />
                     }
-                    </td>
+                </td>
                 <td>
                     @using (Html.BeginForm("AcceptDecline", "Friend"))
                     {

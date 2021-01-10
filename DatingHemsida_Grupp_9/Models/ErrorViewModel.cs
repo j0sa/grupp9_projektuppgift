@@ -1,5 +1,3 @@
-using System;
-
 namespace DatingHemsida_Grupp_9.Models
 {
     public class ErrorViewModel

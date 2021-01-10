@@ -3,14 +3,16 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+<head>
+    <link href="~/css/wall.css" rel="stylesheet" type="text/css" />
+</head>
 <h1>Wall</h1>
 <div>
     @if ((bool)ViewBag.AddFriend == true)
     {
-        @using (Html.BeginForm("AddFriend", "Friend", new { reciverId = Model.Profile.Id }))
+        @using (Html.BeginForm("AddFriend", "Friend", new { receiverId = Model.Profile.Id }))
         {
-        <input type="submit" name="GoToPage" value="Add friend!" />
+            <input type="submit" name="GoToPage" value="Add friend!" />
         }}
     <input id="id" type="hidden" name="id" value="@Model.Profile.Id" />
     <hr />
@@ -49,12 +51,10 @@
             <img src="@("~/Image/" + Model.Profile.ImagePath)" asp-append-version="true" width="250" height="250" />
     </dl>
 </div>
-
 <div id="testDiv">
     @await Html.PartialAsync("_Messeges", Model.WallMessages)
 </div>
 <div>
-
     <form>
         <p>
             <textarea id="messageBody" rows="4" cols="50" placeholder="Write a message!"></textarea>
@@ -63,71 +63,7 @@
         </p>
     </form>
 </div>
-
 @section Scripts {
-    <script>
-
-        $(() =>
-
-            $("#sendButton").click((e) => {
-                e.preventDefault();
-
-                var message = {};
-                message.text = $('#messageBody').val();
-                
-
-                if (message.text.length >= 1 && message.text.length <= 255 && message.text?.trim()) {
-                    sendAndUpdateMessage();
-
-                } else {
-                    alert("Please enter a valid message");
-                }
-
-            })
-
-        );
-        async function sendAndUpdateMessage() {
-
-
-
-            await postMessage();
-            setTimeout(updatePartial, 600);
-
-
-        };
         function postMessage() {
-            var message = {};
-            message.text = $('#messageBody').val();
-            $('#messageBody').val("");
-
-
-            message.reciverId = $('#id').val();
-            $.ajax({
-                type: "POST",
-                url: "/api/MessageAPI/postMessage",
-                data: JSON.stringify(message),
-                contentType: "application/json",
-                dataType: "json"
-                
-
-            });
-            
-        };
-        function updatePartial() {
-            var message = {};
-            message.reciverId = $('#id').val();
-
-            $.ajax({
-                url: "Wall/DisplayMessage",
-                type: "GET",
-                data: message
-
-            }).done(function (partialViewResult) {
-                $("#testDiv").html(partialViewResult);
-
-            });
-            window.scrollTo(0, document.body.scrollHeight);
-        };
-    </script>
-
+    <script src="~/js/message.js"></script>
 }

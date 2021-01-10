@@ -28,13 +28,11 @@ namespace DataLayer.Models
         [NotMapped]
         public IFormFile ImageFile { get; set; }
 
-        public byte[] UserPicture { get; set; }
-
         public ICollection<Message> SentMessages { get; set; } = new List<Message>();
-        public ICollection<Message> RecivedMessages { get; set; } = new List<Message>();
+        public ICollection<Message> ReceivedMessages { get; set; } = new List<Message>();
 
         public ICollection<FriendRequest> SentFriendRequests { get; set; } = new List<FriendRequest>();
-        public ICollection<FriendRequest> RecivedFriendRequests { get; set; } = new List<FriendRequest>();
+        public ICollection<FriendRequest> ReceivedFriendRequests { get; set; } = new List<FriendRequest>();
 
         public Profile()
         {

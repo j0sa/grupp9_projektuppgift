@@ -38,6 +38,7 @@
                     <br />
                     @Html.Label("Other")
                     @Html.RadioButtonFor(m => m.Gender, "Other")
+                    <br />
                     <span asp-validation-for="Gender" class="text-danger"></span>
                 </div>
             </div>
@@ -52,6 +53,7 @@
                     <br />
                     @Html.Label("Bisexual")
                     @Html.RadioButtonFor(m => m.SexualOrientation, "Bisexual")
+                    <br />
                     <span asp-validation-for="SexualOrientation" class="text-danger"></span>
                 </div>
             </div>
@@ -62,14 +64,10 @@
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
-
             </div>
-            @ViewBag.FailedProfile
         </form>
     </div>
 </div>
-
-
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
