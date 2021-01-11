@@ -18,7 +18,7 @@ $(() =>
 
 async function sendAndUpdateMessage() {
     await postMessage();
-    setTimeout(updatePartial, 700);
+    setTimeout(updatePartial, 600);
 };
 
 function postMessage() {

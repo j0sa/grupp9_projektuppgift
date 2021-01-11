@@ -22,12 +22,9 @@
                         </a>
                     </div>
                 </td>
-
                 <td>
                     @Html.DisplayFor(modelItem => item.Firstname)
-
                     @Html.DisplayFor(modelItem => item.Lastname)
-
                     <br />
                     @Html.DisplayFor(modelItem => item.Age)
                     <br />
@@ -36,7 +33,6 @@
                     @Html.DisplayFor(modelItem => item.SexualOrientation)
                 </td>
                 <td>
-
                     @using (Html.BeginForm("Index", "Wall"))
                     {
                         <input type="hidden" name="profileId" value="@item.Id" />
