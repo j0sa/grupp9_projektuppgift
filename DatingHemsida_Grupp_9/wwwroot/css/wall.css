@@ -2,5 +2,6 @@
 }
 
 #messageBody {
-    border-width: 3px;
+    border-width: 1px;
+    color: gray;
 }

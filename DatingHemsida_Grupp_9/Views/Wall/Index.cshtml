@@ -5,6 +5,7 @@
 }
 <head>
     <link href="~/css/wall.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/general.css" rel="stylesheet" type="text/css" />
 </head>
 <h1>Wall</h1>
 <div>
@@ -16,6 +17,7 @@
         }}
     <input id="id" type="hidden" name="id" value="@Model.Profile.Id" />
     <hr />
+    <img class="profilepic" src="@("~/Image/" + Model.Profile.ImagePath)" asp-append-version="true"/>
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Profile.Firstname)
@@ -47,8 +49,6 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Profile.SexualOrientation)
         </dd>
-        <dd class="col-sm-10">
-            <img src="@("~/Image/" + Model.Profile.ImagePath)" asp-append-version="true" width="250" height="250" />
     </dl>
 </div>
 <div id="testDiv">

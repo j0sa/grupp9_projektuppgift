@@ -8,10 +8,8 @@ $(() =>
         if (message.text.length >= 1 && message.text.length <= 255 && message.text?.trim()) {
             sendAndUpdateMessage();
             messageBody.style.borderColor = "black";
-            messageBody.style.borderWidth = "3px";
         } else {
             messageBody.style.borderColor = "red";
-            messageBody.style.borderWidth = "3px";
         }
     })
 );

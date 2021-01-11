@@ -4,9 +4,11 @@
     ViewData["Title"] = "Index";
 }
 
+<head>
+    <link href="~/css/general.css" rel="stylesheet" type="text/css"/>
+</head>
 <h1>Homepage</h1>
 <h5>Press their profilepictures to explore</h5>
-
 <table class="table">
     <thead>
     </thead>
@@ -15,10 +17,9 @@
         {
             <tr>
                 <td>
-
                     <div id="logo">
                         <a href="@Url.Action("Index", "Wall", new {profileId=item.Id})">
-                            <img src="@("~/Image/" + item.ImagePath)" asp-append-version="true" width="250" height="250" />
+                            <img class="examplepic" src="@("~/Image/" + item.ImagePath)" asp-append-version="true" />
                         </a>
                     </div>
                 </td>
@@ -31,13 +32,6 @@
                     @Html.DisplayFor(modelItem => item.Gender)
                     <br />
                     @Html.DisplayFor(modelItem => item.SexualOrientation)
-                </td>
-                <td>
-                    @using (Html.BeginForm("Index", "Wall"))
-                    {
-                        <input type="hidden" name="profileId" value="@item.Id" />
-                        <input type="submit" name="GoToPage" value="Go to profile!" />
-                    }
                 </td>
             </tr>
         }
