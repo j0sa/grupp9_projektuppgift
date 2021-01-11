@@ -73,20 +73,11 @@
                 <input asp-for="ImageFile" accept="image/*" />
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                    <label asp-for="UserPicture" class="control-label"></label>
-                    <input asp-for="UserPicture" class="form-control" />
-                    <span asp-validation-for="UserPicture" class="text-danger"></span>
-                </div>*@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" title="Manage">Back to accountmanager</a>
 </div>
 
 @section Scripts {

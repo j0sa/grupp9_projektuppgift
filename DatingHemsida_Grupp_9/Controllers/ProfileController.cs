@@ -82,7 +82,6 @@ namespace DatingHemsida_Grupp_9.Controllers
             return View(profiles);
         }
 
-        // GET: ProfileController/Create
         public ActionResult Create()
         {
             var UserName = User.Identity.Name;
@@ -94,7 +93,12 @@ namespace DatingHemsida_Grupp_9.Controllers
             return View();
         }
 
-        // POST: ProfileController/Create
+        /*
+         * Skapar en ny profil och binder den till en bild.
+         * Om ingen bild anges, används en standardbild.
+         * Bilden sparas i wwwroot och vägen till bilden sparas hos profilen i databasen.
+         * Användaren matar in allt förrutom sin email och active vid detta tillfälle då email används för att koppla den egna databasen med inloggningsdatabasen.
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")] Profile profile)
@@ -145,7 +149,7 @@ namespace DatingHemsida_Grupp_9.Controllers
             }
         }
 
-        // GET: ProfileController/Edit/5
+        
         public ActionResult Edit()
         {
             //Kontrollerar navbar
@@ -171,7 +175,9 @@ namespace DatingHemsida_Grupp_9.Controllers
             return View(profile);
         }
 
-        // POST: ProfileController/Edit/5
+        /*Uppdaterar profilen och binder på samma sätt som i create.
+         * Användaren kan ändra vad denne önskar och kan lämna bild tom då den sparade bilden inte uppdateras om en ny bild inte skickas in.
+         */
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")] Profile profile)
@@ -223,7 +229,7 @@ namespace DatingHemsida_Grupp_9.Controllers
                         });
                         _DatingContext.SaveChanges();
                     }
-                    return RedirectToAction(nameof(Index));
+                    return Redirect("/Identity/Account/Manage/ChangePassword");
                 }
                 catch
                 {
@@ -243,9 +249,9 @@ namespace DatingHemsida_Grupp_9.Controllers
             var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(User.Identity.Name));
             if (User.Identity.Name != null && profile != null)
             {
-                var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReceiverId.Equals(profile.Id))
+                var listNotAccepted = _DatingContext.FriendRequests.Where(x => x.FriendReceiverId.Equals(profile.Id))
                     .Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
-                if (listatva.Count > 0)
+                if (listNotAccepted.Count > 0)
                 {
                     ViewBag.Requests = true;
                 }

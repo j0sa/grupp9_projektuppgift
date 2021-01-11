@@ -2,7 +2,6 @@
 using DatingHemsida_Grupp_9.Models;
 using DatingHemsida_Grupp_9.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +18,13 @@ namespace DatingHemsida_Grupp_9.Controllers
             _DatingContext = datingContext;
         }
 
+        /*
+         * Sidan där man kan se sin egen och andras väggar med meddelanden.
+         * Om parameter ej skickas med visas den egna väggen, samt om man söker på sitt namn visar man egna profilen fast via parameter.
+         * Skickas en parameter med visas den användarens vägg.
+         */
+
         public ActionResult Index(int? profileId)
-        // GET: Wall
         {
             var shownProfile = _DatingContext.Profiles.SingleOrDefault(p => p.Email == User.Identity.Name);
             ViewBag.AddFriend = false;
@@ -73,12 +77,15 @@ namespace DatingHemsida_Grupp_9.Controllers
                     Profile = profile,
                     WallMessages = currentMessages
                 };
-
                 return View(wallViewModel);
             }
             //Om ej inloggad och ej profil
             else { return RedirectToAction("Index", "Home"); }
         }
+
+        /*
+         * Bestämmer om knappen add friend ska vara synlig
+         */
 
         public void AddFriendVisible(int id)
         {
@@ -97,116 +104,47 @@ namespace DatingHemsida_Grupp_9.Controllers
             }
         }
 
-        //Kontrollerar navbar
+        /*
+         * Bestämmer vilken text som ska visas i navbar baserat på om den inloggade användaren fått nya vänförfrågningar.
+         */
+
         public void FriendRequestVisible()
         {
-            //Skickar true or false till vyn för att visa om det finns vänförfrågningar
             ViewBag.Requests = false;
             var user = User.Identity.Name;
-
-            var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user));
-
-            var id = profile.Id;
-
-            //Lista av vänförfrågningar
-            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReceiverId.Equals(id))
+            var id = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(user)).Id;
+            var listNotAccepted = _DatingContext.FriendRequests.Where(x => x.FriendReceiverId.Equals(id))
                 .Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
-
-            //Om listan av vänförfrågningar är större än 0
-            if (listatva.Count > 0)
+            if (listNotAccepted.Count > 0)
             {
                 ViewBag.Requests = true;
             }
         }
 
+        /*
+         * Uppdaterar partialview för meddelanden
+         */
+
         [HttpGet]
         public PartialViewResult DisplayMessage(Message message)
         {
-            var UserName = User.Identity.Name;
-            var user = _DatingContext.Profiles.SingleOrDefault(p => p.Email == UserName).Id;
-
             var databaseMessages = _DatingContext.Messages.Where(x => x.ReceiverId == message.ReceiverId);
-            //Hämtar alla profiler i databas
             var profiles = _DatingContext.Profiles.ToList();
-
             List<Message> messages = new List<Message>();
-
-            foreach (var m in databaseMessages)
+            foreach (var i in databaseMessages)
             {
-                Message message1 = new Message()
+                Message newMessage = new Message()
                 {
-                    MessageId = m.MessageId,
-                    SenderId = m.SenderId,
-                    ReceiverId = m.ReceiverId,
-                    Text = m.Text,
-                    Date = m.Date,
-                    Author = profiles.Single(x => x.Id == m.SenderId).Firstname + " " + profiles.Single(x => x.Id == m.SenderId).Lastname
+                    MessageId = i.MessageId,
+                    SenderId = i.SenderId,
+                    ReceiverId = i.ReceiverId,
+                    Text = i.Text,
+                    Date = i.Date,
+                    Author = profiles.Single(x => x.Id == i.SenderId).Firstname + " " + profiles.Single(x => x.Id == i.SenderId).Lastname
                 };
-                messages.Add(message1);
+                messages.Add(newMessage);
             };
             return PartialView("_Messeges", messages);
-        }
-
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Wall/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Wall/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: Wall/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Wall/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Wall/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

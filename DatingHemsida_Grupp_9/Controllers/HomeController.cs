@@ -68,9 +68,9 @@ namespace DatingHemsida_Grupp_9.Controllers
             ViewBag.Requests = false;
             var profile = _DatingContext.Profiles.SingleOrDefault(p => p.Email.Equals(User.Identity.Name));
             var id = profile.Id;
-            var listatva = _DatingContext.FriendRequests.Where(x => x.FriendReceiverId.Equals(id))
+            var listNotAccepted = _DatingContext.FriendRequests.Where(x => x.FriendReceiverId.Equals(id))
                 .Where(x => x.Accepted == false).Select(x => x.FriendSenderId).ToList();
-            if (listatva.Count > 0)
+            if (listNotAccepted.Count > 0)
             {
                 ViewBag.Requests = true;
             }
