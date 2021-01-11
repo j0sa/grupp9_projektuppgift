@@ -3,7 +3,9 @@
 @{
     ViewData["Title"] = "Edit";
 }
-
+<head>
+    <link href="~/css/general.css" rel="stylesheet" type="text/css" />
+</head>
 <h1>Edit</h1>
 
 <h4>Profile</h4>
@@ -65,7 +67,7 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" /> 
+                    <input class="form-check-input" asp-for="Active" />
                     @Html.DisplayNameFor(model => model.Active)
                 </label>
             </div>

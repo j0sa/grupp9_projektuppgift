@@ -99,6 +99,7 @@ namespace DatingHemsida_Grupp_9.Controllers
          * Bilden sparas i wwwroot och vägen till bilden sparas hos profilen i databasen.
          * Användaren matar in allt förrutom sin email och active vid detta tillfälle då email används för att koppla den egna databasen med inloggningsdatabasen.
          */
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")] Profile profile)
@@ -149,7 +150,6 @@ namespace DatingHemsida_Grupp_9.Controllers
             }
         }
 
-        
         public ActionResult Edit()
         {
             //Kontrollerar navbar
@@ -178,6 +178,7 @@ namespace DatingHemsida_Grupp_9.Controllers
         /*Uppdaterar profilen och binder på samma sätt som i create.
          * Användaren kan ändra vad denne önskar och kan lämna bild tom då den sparade bilden inte uppdateras om en ny bild inte skickas in.
          */
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind("Id, Firstname, Lastname, Age, Email, Gender, SexualOrientation, Active, ImageFile")] Profile profile)

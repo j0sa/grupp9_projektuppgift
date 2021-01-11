@@ -17,7 +17,7 @@
         }}
     <input id="id" type="hidden" name="id" value="@Model.Profile.Id" />
     <hr />
-    <img class="profilepic" src="@("~/Image/" + Model.Profile.ImagePath)" asp-append-version="true"/>
+    <img class="profilepic" src="@("~/Image/" + Model.Profile.ImagePath)" asp-append-version="true" />
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Profile.Firstname)
